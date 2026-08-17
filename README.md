@@ -8,9 +8,9 @@ Cada carpeta corresponde a un Trabajo Práctico (TP) de la materia:
 - **TP1:** Repaso de fundamentos esenciales e introducción a Packet Tracer
 
 ## Autores 
-- García, Lutaro Misael 
+- García, Lautaro Misael 
 * Pastrana Lizárraga, Iván
-- Peretti, Federico
+- Peretti, Federico Ariel
 * Renaudo Gaggioli, Valentino
 - Verdú, Melisa Noel 
 
