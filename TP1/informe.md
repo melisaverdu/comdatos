@@ -36,7 +36,7 @@ En el siguiente gráfico podemos observar una onda electromagnética senoidal cu
 
 ![alt text](./assets/grafico-p1.png)
 
-## Cálculo de parámetros de la onda 
+### Cálculo de parámetros de la onda 
 **Longitud de onda ($\lambda$)**
 
 Se conoce como **longitud de onda** a la distancia que recorre una perturbación periódica que se propaga por un medio en un ciclo. La longitud de onda también conocida como **periodo espacial** es la inversa de la frecuencia multiplicado por la velocidad de propagación de la onda en el media por el cual se propaga. 
@@ -52,7 +52,7 @@ Como anteriormente fue desarrollada, existe la relación:
 $$
 \lambda = \frac{c}{f} = \frac{3x10^8 m/s}{0,06m} = 5x10^9 GHz$$ 
 
-## Región y banda del espectro EM
+### Región y banda del espectro EM
 La **Unión Internacional de Telecomunicaciones (UIT)** es un organismo especializado de las Naciones Unidas responsable de muchas cuestiones relacionadas con las tecnologías de la información y las comunicaciones. El mimso define a las ondas de radio como: **"ondas electromagnéticas de frecuencias arbitrariamente Más de 3000GHz, propagado en el espacio sin guía artificial"**. Ésta última frase "propagadas en el aire sin guía artificial" significa que las ondas de radio viajan de forma libre por el aire, el vacío o el agua, en lugar de estar contenidas dentro de un cable físico, ésta aclaración sirve para separar el mundo inhalámbrico del cableado ya que la UIT solo regula las frecuencias que viajan libres por el espacio, ya que al cruzarse pueden causar interferencias entre países.
 
 Una **banda** de radio es una banda de frecuencia pequeña (una sección contigua del rango del espectro de radio) en la que los canales se usan normalmente o se reservan para el mismo propósito. Para evitar interferencias y permitir un uso eficiente del espectro radioeléctrico, se asignan servicios similares en bandas.
@@ -60,6 +60,18 @@ Una **banda** de radio es una banda de frecuencia pequeña (una sección contigu
 Los tipos de radiación electromagnética se clasifican ampliamente en **clases (regiones, bandas o tipos)**. Esta clasificación va en el orden creciente de la longitud de onda, que es característico del tipo de radiación.
 
 La frecuencia calculada en la onda de la imágen es de 5GHz, como este valor está comprendido en el intervalo entre 3GHz y 30GHz, la UIT la clasifica formalmente en la **Banda 10: SFH (Super High Frecuency)**. Estas frecuencias caen dentro dentro de la banda de microondas.
+
+### Dispositivos de comunicaciones en la banda SFH
+**Wi-fi 5 y Wi-fi 6** son certificaciones tecnológicas que definen la velocidad, la capacidad y la eficiencia de las conexiones inhalámbricas a Internet. Son los nombres comerciales de la IEEE (instituto de Ingenieros Eléctricos Electrónicos) que determinan cómo se envian los datos por el aire. Se corresponden a routers y placas de red inhalámbricas que operan en los canales de la banda 5GHz, por ejemplo un router doméstico.
+
+### Fenómeno representado por la línea de trazos roja 
+El fenómeno representado por la línea de trazos roja es la **atenuación**, que representa la pérdida gradual de ontensidad, potencia o amplitud que sufre una señal a medida que se propaga a través del espacio o de un medio material.
+
+### Incidencia del fenómeno y experiencia cotidiana 
+El fenómeno de la atenuación si afecta a dispositivos Wi-Fi, limitando su alcance efectivo. En la vida cotidiana al alejarnos del router Wi-Fi en una vivienda o al interponer paredes, la intendidad de la señal cae drásticamente y la velocidad de conexión disminuye.
+
+### Efecto de la atenuación en distintos medios
+En las transmisiones de telefonía celular el fenómeno de la atenuación si afecta, la señal pierde potencia por trayectoria, obstáculos físicos y condiciones climáticas. En transmisiones por cable coaxial, también afecta, ya que las pérdudas del dieléctrico y el efecto piel del conductor atenúan la señal a lo largo del cable, por último las transmisiones por fibra óptica también se ven afectadas, en menor nivel en comparación con los cables metálicos o el aire.
 
 ## 2. Transmisión de señales digitales
 
