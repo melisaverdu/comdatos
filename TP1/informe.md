@@ -31,6 +31,36 @@ De manera general, cuando la información que modula la portadora es analógica,
 
 La portadora es una señal periódica caracterizada principalmente por su **amplitud, frecuencia y fase**. Según cuál de estos parámetros sea modificado por la información, pueden distinguirse diferentes técnicas de modulación. En las modulaciones analógicas clásicas se encuentran la **modulación de amplitud (AM)**, la **modulación de frecuencia (FM)** y la **modulación de fase (PM)**. En las técnicas digitales, esta misma idea da lugar a esquemas en los que la información modifica de manera discreta alguno de estos parámetros.
 
+## Análisis de gráfico
+En el siguiente gráfico podemos observar una onda electromagnética senoidal cuya amplitud disminuye  a medida de que aumenta la distancia de propagación  recorrida de la misma.
+
+![alt text](./assets/grafico-p1.png)
+
+## Cálculo de parámetros de la onda 
+**Longitud de onda ($\lambda$)**
+
+Se conoce como **longitud de onda** a la distancia que recorre una perturbación periódica que se propaga por un medio en un ciclo. La longitud de onda también conocida como **periodo espacial** es la inversa de la frecuencia multiplicado por la velocidad de propagación de la onda en el media por el cual se propaga. 
+
+La **magnitud** de la longitud de onda se puede determinar como la distancia entre dos máximos consecutivos de la perturbación.
+
+$$ \lambda = 120mm - 60mm = 0,06\pi $$
+
+**Frecuencia ($f$)**
+La frecuencia es el número de repeticiones por unidad de tiempo de cualquier proceso periódico.
+
+Como anteriormente fue desarrollada, existe la relación: 
+$$
+\lambda = \frac{c}{f} = \frac{3x10^8 m/s}{0,06m} = 5x10^9 GHz$$ 
+
+## Región y banda del espectro EM
+La **Unión Internacional de Telecomunicaciones (UIT)** es un organismo especializado de las Naciones Unidas responsable de muchas cuestiones relacionadas con las tecnologías de la información y las comunicaciones. El mimso define a las ondas de radio como: **"ondas electromagnéticas de frecuencias arbitrariamente Más de 3000GHz, propagado en el espacio sin guía artificial"**. Ésta última frase "propagadas en el aire sin guía artificial" significa que las ondas de radio viajan de forma libre por el aire, el vacío o el agua, en lugar de estar contenidas dentro de un cable físico, ésta aclaración sirve para separar el mundo inhalámbrico del cableado ya que la UIT solo regula las frecuencias que viajan libres por el espacio, ya que al cruzarse pueden causar interferencias entre países.
+
+Una **banda** de radio es una banda de frecuencia pequeña (una sección contigua del rango del espectro de radio) en la que los canales se usan normalmente o se reservan para el mismo propósito. Para evitar interferencias y permitir un uso eficiente del espectro radioeléctrico, se asignan servicios similares en bandas.
+
+Los tipos de radiación electromagnética se clasifican ampliamente en **clases (regiones, bandas o tipos)**. Esta clasificación va en el orden creciente de la longitud de onda, que es característico del tipo de radiación.
+
+La frecuencia calculada en la onda de la imágen es de 5GHz, como este valor está comprendido en el intervalo entre 3GHz y 30GHz, la UIT la clasifica formalmente en la **Banda 10: SFH (Super High Frecuency)**. Estas frecuencias caen dentro dentro de la banda de microondas.
+
 ## 2. Transmisión de señales digitales
 
 
