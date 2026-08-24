@@ -81,4 +81,4 @@ Se analizaron los aspectos fundamentales de la transmisión de datos, integrando
 * **Validación en Packet Tracer:** La simulación confirmó que la atenuación impacta de forma directa en el desempeño. Dentro del área de cobertura la pérdida de paquetes es del 0% con latencias estables, pero al superar el umbral de sensibilidad del receptor la señal se degrada por completo y la comunicación se corta.
 
 ## Referencias
-*[1]* William Stallings, Comunicaciones y redes de computadores, 7.ª edición, capítulo 3 *“Transmisión de datos”*.
+**[1]** William Stallings, *Comunicaciones y redes de computadores*, 7.ª edición, capítulo 3 **“Transmisión de datos”**.
