@@ -63,7 +63,7 @@ Se evaluó la calidad de la señal y la conectividad inalámbrica desplazando la
 2. **Ubicación 2 (Límite de señal Wi-Fi):** 
    * **Estado:** Enlace operativo en el borde de cobertura.
    * **Resultado:** **0% de paquetes perdidos** / Latencia promedio: **17 ms**.
-   ![Notebook en el limite de cobertura](/TP1/assets/punto_4_h_pos2.png)
+![Notebook en el límite de cobertura](assets/punto_4_h_pos2.png)
 
 3. **Ubicación 3 (Fuera de la zona de cobertura):** 
    * **Estado:** Sin señal.
