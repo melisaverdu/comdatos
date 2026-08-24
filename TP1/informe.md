@@ -73,6 +73,12 @@ Se evaluó la calidad de la señal y la conectividad inalámbrica desplazando la
 
 ## 5. Conclusiones
 
+Se analizaron los aspectos fundamentales de la transmisión de datos, integrando la teoría física con la simulación práctica:
 
+* **Propagación y atenuación:** La atenuación es inherente a cualquier medio. En bandas como UHF (2.4 GHz) y SHF (5 GHz), la pérdida de potencia por distancia limita la cobertura, exigiendo un diseño adecuado entre potencia de emisión y sensibilidad del receptor.
+* **Limitación del canal y modulación:** Las señales digitales escalonadas poseen un ancho de banda teóricamente infinito. Dado que los canales reales filtran las altas frecuencias y distorsionan la señal, la modulación de portadoras es esencial para transmitir información digital eficientemente.
+* **Compromiso en $M\text{-PSK}$ (BER vs. Eficiencia):** Existe un balance entre velocidad y robustez frente al ruido. Mientras $\text{BPSK}$ ofrece la menor probabilidad de error ($\text{BER}$) gracias a la máxima separación entre símbolos ($180^\circ$), esquemas de mayor orden ($\text{QPSK}$, $8\text{-PSK}$) aumentan la tasa de transferencia a costa de una mayor sensibilidad a las interferencias.
+* **Validación en Packet Tracer:** La simulación confirmó que la atenuación impacta de forma directa en el desempeño. Dentro del área de cobertura la pérdida de paquetes es del 0% con latencias estables, pero al superar el umbral de sensibilidad del receptor la señal se degrada por completo y la comunicación se corta.
 
 ## Referencias
+*[1]* William Stallings, Comunicaciones y redes de computadores, 7.ª edición, capítulo 3 *“Transmisión de datos”*.
