@@ -111,11 +111,7 @@ En términos de BER, entre las modulaciones PSK consideradas, **BPSK presenta la
 
 Al aumentar $M$ en una modulación $M$-PSK, los símbolos deben distribuirse entre más fases dentro de la misma circunferencia. Por lo tanto, la distancia entre símbolos vecinos disminuye, haciendo que sea más difícil distinguirlos en presencia de ruido y aumentando la probabilidad de error para una misma relación señal/ruido.
 
-Existe, por lo tanto, un compromiso entre **eficiencia espectral** y **prestaciones frente al ruido**: aumentar el número de fases permite transmitir más bits por símbolo, pero reduce la separación entre los símbolos y, en consecuencia, empeora el BER bajo las mismas condisiones de comparación.
-
-### Referencia utilizada
-
-**[1]** William Stallings, *Comunicaciones y redes de computadores*, 7.ª edición, capítulo 3 **“Transmisión de datos”**.
+Existe, por lo tanto, un compromiso entre **eficiencia espectral** y **prestaciones frente al ruido**: aumentar el número de fases permite transmitir más bits por símbolo, pero reduce la separación entre los símbolos y, en consecuencia, empeora el BER bajo las mismas condiciones de comparación.
 
 ## 4. Implementación en Packet Tracer
 
