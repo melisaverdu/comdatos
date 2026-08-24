@@ -24,7 +24,7 @@
 ## 4. Implementación en Packet Tracer
 
 ### Análisis de la Configuración Inalámbrica del Router
-![Red implementada](/TP1/assets/punto_4.png)
+![Red implementada](assets/punto_4.png)
 
 A partir de la información extraída de la interfaz de configuración del router, se determinan los siguientes parámetros físicos y de espectro:
 
