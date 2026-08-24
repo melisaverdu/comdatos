@@ -31,47 +31,69 @@ De manera general, cuando la información que modula la portadora es analógica,
 
 La portadora es una señal periódica caracterizada principalmente por su **amplitud, frecuencia y fase**. Según cuál de estos parámetros sea modificado por la información, pueden distinguirse diferentes técnicas de modulación. En las modulaciones analógicas clásicas se encuentran la **modulación de amplitud (AM)**, la **modulación de frecuencia (FM)** y la **modulación de fase (PM)**. En las técnicas digitales, esta misma idea da lugar a esquemas en los que la información modifica de manera discreta alguno de estos parámetros.
 
-## Análisis de gráfico
-En el siguiente gráfico podemos observar una onda electromagnética senoidal cuya amplitud disminuye  a medida de que aumenta la distancia de propagación  recorrida de la misma.
+### Análisis del gráfico
 
-![alt text](./assets/grafico-p1.png)
+El gráfico representa una onda electromagnética senoidal cuya amplitud disminuye a medida que aumenta la distancia recorrida. La disminución de amplitud representa la atenuación de la señal durante su propagación.
 
-### Cálculo de parámetros de la onda 
+![Onda electromagnética](./assets/grafico-p1.png)
+
+### Cálculo de parámetros de la onda
+
 **Longitud de onda ($\lambda$)**
 
-Se conoce como **longitud de onda** a la distancia que recorre una perturbación periódica que se propaga por un medio en un ciclo. La longitud de onda también conocida como **periodo espacial** es la inversa de la frecuencia multiplicado por la velocidad de propagación de la onda en el media por el cual se propaga. 
+La longitud de onda es la distancia que recorre la onda durante un ciclo y puede determinarse como la distancia entre dos máximos consecutivos.
 
-La **magnitud** de la longitud de onda se puede determinar como la distancia entre dos máximos consecutivos de la perturbación.
+A partir del gráfico:
 
-$$ \lambda = 120mm - 60mm = 0,06\pi $$
+$$
+\lambda = 120 \text{mm} - 60 \text{mm}
+$$
+
+$$
+\boxed{\lambda = 60 \text{mm} = 0,06 \text{m}}
+$$
 
 **Frecuencia ($f$)**
-La frecuencia es el número de repeticiones por unidad de tiempo de cualquier proceso periódico.
 
-Como anteriormente fue desarrollada, existe la relación: 
+Considerando una velocidad de propagación de $c=3 \times10^8 \text{m/s}$:
+
 $$
-\lambda = \frac{c}{f} = \frac{3x10^8 m/s}{0,06m} = 5x10^9 GHz$$ 
+f = \frac{c}{\lambda}
+$$
 
-### Región y banda del espectro EM
-La **Unión Internacional de Telecomunicaciones (UIT)** es un organismo especializado de las Naciones Unidas responsable de muchas cuestiones relacionadas con las tecnologías de la información y las comunicaciones. El mimso define a las ondas de radio como: **"ondas electromagnéticas de frecuencias arbitrariamente Más de 3000GHz, propagado en el espacio sin guía artificial"**. Ésta última frase "propagadas en el aire sin guía artificial" significa que las ondas de radio viajan de forma libre por el aire, el vacío o el agua, en lugar de estar contenidas dentro de un cable físico, ésta aclaración sirve para separar el mundo inhalámbrico del cableado ya que la UIT solo regula las frecuencias que viajan libres por el espacio, ya que al cruzarse pueden causar interferencias entre países.
+$$
+f = \frac{3\times10^8 \text{m/s}}{0,06 \text{m}}
+= 5\times10^9 \text{Hz}
+$$
 
-Una **banda** de radio es una banda de frecuencia pequeña (una sección contigua del rango del espectro de radio) en la que los canales se usan normalmente o se reservan para el mismo propósito. Para evitar interferencias y permitir un uso eficiente del espectro radioeléctrico, se asignan servicios similares en bandas.
+$$
+\boxed{f=5 \text{GHz}}
+$$
 
-Los tipos de radiación electromagnética se clasifican ampliamente en **clases (regiones, bandas o tipos)**. Esta clasificación va en el orden creciente de la longitud de onda, que es característico del tipo de radiación.
+### Región y banda del espectro electromagnético
 
-La frecuencia calculada en la onda de la imágen es de 5GHz, como este valor está comprendido en el intervalo entre 3GHz y 30GHz, la UIT la clasifica formalmente en la **Banda 10: SFH (Super High Frecuency)**. Estas frecuencias caen dentro dentro de la banda de microondas.
+La frecuencia obtenida, $5 \text{GHz}$, se encuentra dentro del rango de **microondas**, correspondiente a frecuencias comprendidas aproximadamente entre $3$ y $30 \text{GHz}$.
 
-### Dispositivos de comunicaciones en la banda SFH
-**Wi-fi 5 y Wi-fi 6** son certificaciones tecnológicas que definen la velocidad, la capacidad y la eficiencia de las conexiones inhalámbricas a Internet. Son los nombres comerciales de la IEEE (instituto de Ingenieros Eléctricos Electrónicos) que determinan cómo se envian los datos por el aire. Se corresponden a routers y placas de red inhalámbricas que operan en los canales de la banda 5GHz, por ejemplo un router doméstico.
+Dentro de la clasificación de bandas de radio, este rango corresponde a la **banda SHF (Super High Frequency)**.
 
-### Fenómeno representado por la línea de trazos roja 
-El fenómeno representado por la línea de trazos roja es la **atenuación**, que representa la pérdida gradual de ontensidad, potencia o amplitud que sufre una señal a medida que se propaga a través del espacio o de un medio material.
+### Dispositivos de comunicaciones en la banda SHF
 
-### Incidencia del fenómeno y experiencia cotidiana 
-El fenómeno de la atenuación si afecta a dispositivos Wi-Fi, limitando su alcance efectivo. En la vida cotidiana al alejarnos del router Wi-Fi en una vivienda o al interponer paredes, la intendidad de la señal cae drásticamente y la velocidad de conexión disminuye.
+La banda de $5 \text{GHz}$ es utilizada por diferentes sistemas de comunicaciones inalámbricas. Entre ellos se encuentran las redes **Wi-Fi**, particularmente aquellas que utilizan las bandas de $5 \text{GHz}$, como Wi-Fi 5 (IEEE 802.11ac) y Wi-Fi 6 (IEEE 802.11ax).
+
+Un ejemplo de dispositivo que opera en esta banda es un **punto de acceso o router Wi-Fi de 5 GHz**.
+
+### Fenómeno representado por la línea de trazos roja
+
+La línea de trazos roja representa la **atenuación**, es decir, la disminución de la amplitud o potencia de una señal a medida que se propaga.
+
+### Incidencia del fenómeno y experiencia cotidiana
+
+La atenuación afecta a las comunicaciones Wi-Fi y limita su alcance efectivo. En una vivienda, por ejemplo, la señal suele disminuir al aumentar la distancia respecto del punto de acceso y al atravesar obstáculos como paredes, lo que puede reducir la calidad y velocidad de la conexión.
 
 ### Efecto de la atenuación en distintos medios
-En las transmisiones de telefonía celular el fenómeno de la atenuación si afecta, la señal pierde potencia por trayectoria, obstáculos físicos y condiciones climáticas. En transmisiones por cable coaxial, también afecta, ya que las pérdudas del dieléctrico y el efecto piel del conductor atenúan la señal a lo largo del cable, por último las transmisiones por fibra óptica también se ven afectadas, en menor nivel en comparación con los cables metálicos o el aire.
+
+La atenuación está presente en diferentes medios de transmisión. En las **comunicaciones celulares**, la señal pierde potencia debido a la distancia recorrida y a obstáculos presentes en el entorno. En **cables coaxiales**, se producen pérdidas asociadas al conductor y al dieléctrico. En **fibra óptica** también existe atenuación, en este caso, las pérdidas se deben principalmente a fenómenos como la absorción y la dispersión en el material de la fibra.
+
 
 ## 2. Transmisión de señales digitales
 
