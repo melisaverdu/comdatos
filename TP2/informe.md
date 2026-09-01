@@ -51,7 +51,7 @@ Los sistemas de transmisión digital no pueden evitar las perturbaciones causada
 En los canales digitales, la frecuencia de la señal recibida puede variar debido a imperfecciones térmicas o inestabilidades en los osciladores locales, así como por el efecto Doppler derivado del movimiento relativo entre el emisor y el receptor. Para mantener la sincronía, se utilizan los siguientes mecanismos de compensación:
 
 * **Lazos de Seguimiento de Fase y Frecuencia (PLL / FLL):** Son circuitos o algoritmos digitales en el receptor que monitorean de forma continua la señal entrante y ajustan la fase y frecuencia del oscilador local para mantenerse "enganchados" exactamente a la frecuencia de la portadora recibida.
-* **Símbolos Piloto (*Pilot Signals* / *Training Sequences*):** Consiste en la inserción periódica de patrones de datos previamente conocidos por el receptor dentro del flujo de información. Al comparar el símbolo recibido con el patrón ideal esperado, el sistema puede estimar con alta precisión el desplazamiento de frecuencia (*frequency offset*) y aplicar correcciones digitales mediante ecualizadores.
+* **Símbolos Piloto (*Pilot Signals* / *Training Sequences*):** Consisten en la inserción periódica de patrones de datos previamente conocidos por el receptor dentro del flujo de información. Al comparar los símbolos recibidos con el patrón ideal esperado, el sistema puede estimar con alta precisión el desplazamiento de frecuencia (*frequency offset*) y aplicar correcciones digitales mediante ecualizadores.
 ---
 
 ## Sincronización, Estructura y Delimitación en la Capa de Enlace
