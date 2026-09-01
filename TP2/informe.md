@@ -13,9 +13,9 @@
 
 ## Fenómenos de Propagación y Movilidad en Enlaces Inalámbricos
 
-<center>
-  <img src="./assets/figura_propagacion.png" alt="Corrimiento Doppler en comunicaciones móviles" width="60%">
-</center>
+<p align="center">
+  <img src="./assets/figura_propagacion.png" alt="Corrimiento Doppler en comunicaciones móviles" width="60%" />
+</p>
 
 ### Efecto Doppler y Corrimiento Frecuencial en Comunicaciones Móviles
 
