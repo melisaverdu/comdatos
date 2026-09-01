@@ -87,7 +87,6 @@ def main():
     MY_GROUP = "TCPánico"
     file_path = os.path.join(os.path.dirname(__file__), "..", "assets", "frames.bin") if len(sys.argv) <= 1 else sys.argv[1]
 
-    # --- Sub-issue 5.1 (#15) ---
     print(f"=== Payloads de {MY_GROUP} ===")
     mis_paquetes = extract_payloads(file_path, MY_GROUP)
     if not mis_paquetes:
@@ -96,7 +95,6 @@ def main():
     for seq, payload in sorted(mis_paquetes, key=lambda x: x[0]):
         print(f"SEQ: {seq:02d} | PAYLOAD: {payload}")
 
-    # --- Sub-issue 5.2 (#16) ---
     print("\n" + "="*60)
     print("=== Reconstrucción Total de la Información ===")
 
