@@ -44,7 +44,7 @@ Los sistemas de transmisión digital no pueden evitar las perturbaciones causada
   * *Métodos habituales:* Bit de paridad, Suma de comprobación (*Checksum*) y Chequeo de Redundancia Cíclica (*CRC*).
 
 * **Corrección de Errores:** Una vez detectada la alteración de los datos, los sistemas emplean dos mecanismos principales para subsanarla:
-  * **ARQ (*Automatic Repeat reQuest*):** Es una estrategia por retransmisión. Cuando el receptor detecta un error, solicita al emisor la retransmisión de los datos afectados.
+  * **ARQ (*Automatic Repeat Request*):** Es una estrategia por retransmisión. Cuando el receptor detecta un error, solicita al emisor la retransmisión de los datos afectados.
   * **FEC (*Forward Error Correction*):** Se agregan bits de redundancia suficientes para que el receptor pueda detectar y corregir determinados errores directamente, sin necesidad de retransmisión.
 
 ### Compensación de Variaciones de Frecuencia y Control de Fase
