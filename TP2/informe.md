@@ -95,10 +95,3 @@ La restricción que prohíbe el uso activo de telefonía celular comercial a bor
 ### Formato de Trama y Extracción de la Carga Útil del Grupo
 
 ### Reensamblado Secuencial y Reconstrucción del Mensaje Global
-
----
-
-## Referencias
-
-**[1]** SatCom Index (2026). *Satellite Doppler Shift Explained: Why Frequency Changes in LEO Satellite Communication*. https://www.satcomindex.com/blog/satellite-doppler-shift-explained  
-
