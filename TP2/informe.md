@@ -47,7 +47,7 @@
 
 ### Sincronización a Nivel de Bit y Sincronización de Trama
 
-La sincronizacion es el proceso mediante el cual el emisor y el receptor coordinan el tiempo para que el receptor sepa exactamente cuanod muestrar la señal entrante e interpretar correctamente la informacion digital enviada
+La sincronización es el proceso mediante el cual el emisor y el receptor coordinan el tiempo para que el receptor sepa exactamente cuándo muestrear la señal entrante e interpretar correctamente la información digital enviada.
 
 * **Sincronizacion a nivel de bit** Permite al receptor determinar la velocidad de transmision y el instante exacto en el que empieza y termina un bit individual. Garantiza que el receptor lea la señal en el momento preciso para interpretar correctamente si es un 0 o un 1 digital
 
