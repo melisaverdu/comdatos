@@ -11,6 +11,17 @@
 
 ---
 
+### Índice
+
+1. [Fenómenos de Propagación y Movilidad en Enlaces Inalámbricos](#fenómenos-de-propagación-y-movilidad-en-enlaces-inalámbricos)
+2. [Degradación de Señal, Ruido e Interferencia en el Canal](#degradación-de-señal-ruido-e-interferencia-en-el-canal)
+3. [Estrategias Digitales de Detección, Corrección y Compensación Frecuencial](#estrategias-digitales-de-detección-corrección-y-compensación-frecuencial)
+4. [Sincronización, Estructura y Delimitación en la Capa de Enlace](#sincronización-estructura-y-delimitación-en-la-capa-de-enlace)
+5. [Procesamiento, Extracción y Reconstrucción de Tramas Binarias](#procesamiento-extracción-y-reconstrucción-de-tramas-binarias)
+6. [Conclusión](#conclusión)
+
+---
+
 ## Fenómenos de Propagación y Movilidad en Enlaces Inalámbricos
 
 <p align="center">
@@ -266,3 +277,21 @@ A partir de la inspección de la salida cruda, se aplicaron las siguientes deduc
 
 * **Mensaje Reconstruido:**  
   `https://www.youtube.com/shorts/dbbe_ln6Lnw`
+
+---
+
+## Conclusión
+
+A lo largo del desarrollo del presente trabajo práctico, se integraron y consolidaron conceptos fundamentales correspondientes a la **Capa Física** y a la **Capa de Enlace de Datos**, articulando la fundamentación teórica con el análisis de casos de aplicación real y la experimentación práctica sobre datos binarios:
+
+* **Dinámica de la Capa Física y Movilidad:** Se profundizó en cómo el movimiento relativo entre transmisor y receptor introduce perturbaciones críticas como el **Efecto Doppler**, especialmente condicionante en constelaciones satelitales de órbita baja (LEO) y plataformas de alta velocidad. Estos desvíos frecuenciales demandan la implementación de técnicas de precorrección en lazo abierto asistidas por efemérides y lazos de seguimiento fino (AFC/PLL) en recepción para sostener la sincronización de portadora.
+* **Degradación del Canal y Relación Señal a Ruido:** Se analizó el impacto del ruido y de las interferencias electromagnéticas (EMI) en diversos medios de propagación. Se comprobó la inmunidad absoluta de la **fibra óptica** frente a interferencias electromagnéticas frente a la vulnerabilidad intrínseca de los canales inalámbricos compartidos, así como la estrecha relación inversamente exponencial que vincula a la **SNR** con la tasa de error de bit (**BER**) bajo las restricciones teóricas de capacidad de Shannon.
+* **Mecanismos de Compensación y Robustez Digital:** Se estudió cómo los sistemas de transmisión modernos hacen frente a las imperfecciones del canal físico mediante redundancia estructurada (algoritmos de detección y corrección de errores como CRC, ARQ y FEC) y la inserción de señales piloto para mitigar desalineaciones de fase y frecuencia.
+* **Estructuración y Delimitación en la Capa de Enlace:** Se comprendió la necesidad funcional de segmentar el flujo continuo de bits en unidades discretas (**tramas**), reconociendo el rol del preámbulo en la sincronización de reloj a nivel de bit y comparando los distintos métodos de delimitación de tramas (longitud fija, campos de conteo en cabecera y secuencias de escape con relleno de bits o caracteres).
+* **Validación Práctica mediante Procesamiento de Tramas:** El análisis y decodificación del archivo `frames.bin` permitió experimentar directamente con problemáticas reales de transmisión: pérdida de tramas, corrupción de bytes de secuencia, colisiones y sobrecarga de datos de relleno (*padding*). A través del diseño del script `decode.py` y la sanitización lógica de las cargas útiles de cada grupo, se logró reconstruir con éxito el mensaje original (`https://www.youtube.com/shorts/dbbe_ln6Lnw`), demostrando la relevancia del encapsulamiento, la integridad de cabeceras y el ordenamiento secuencial en las comunicaciones digitales.
+
+---
+
+## Referencias
+
+**[1]** SatCom Index (2026). *Satellite Doppler Shift Explained: Why Frequency Changes in LEO Satellite Communication*. https://www.satcomindex.com/blog/satellite-doppler-shift-explained  
