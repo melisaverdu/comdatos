@@ -27,7 +27,9 @@
 
 ## Captura e Inspección de Tráfico con Wireshark
 
-![Captura de pantalla mostrando paquete TCP y direcciones MAC](./assets/tp3-wiresharck-mac.png)
+<p align="center">
+  <img src="./assets/tp3-wireshark-mac.png" alt="Captura de pantalla mostrando paquete TCP y direcciones MAC" width="80%" />
+</p>
 
 ### Análisis de Tramas Ethernet y Direcciones MAC
 
