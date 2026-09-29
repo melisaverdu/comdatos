@@ -113,12 +113,37 @@ Este intercambio suele denominarse **Four-way handshake**. A diferencia del esta
 
 ### Captura de Conexión Local (PacketSender + Wireshark)
 
+Se utilizaron dos instancias de PacketSender para establecer una conexión TCP local. Una de ellas se configuró como servidor y la otra como cliente, utilizando la dirección de loopback `127.0.0.1` y el puerto configurado en el servidor.
+
+La interfaz de loopback fue monitoreada mediante Wireshark para capturar el establecimiento de la conexión, el intercambio de datos y su posterior finalización.
+
+Al iniciar la conexión se observaron los tres segmentos correspondientes al **Three-way handshake**:
+
+1. El cliente envió un segmento con la bandera `SYN` activada ([captura](./assets/tcp-01-syn.png)).
+2. El servidor respondió con un segmento `SYN, ACK` ([captura](./assets/tcp-02-syn-ack.png)).
+3. El cliente respondió con un segmento `ACK` ([captura](./assets/tcp-03-ack.png)).
+
+Una vez establecida la conexión, se envió desde el cliente el mensaje `hola-tcp`. En Wireshark se pudo identificar el segmento TCP que transportaba este mensaje y analizar su cabecera y carga útil ([captura](./assets/tcp-04-data.png)). La cadena enviada se encontraba dentro de los datos transportados por TCP, diferenciándose de los campos propios de la cabecera del protocolo.
 
 ### Cierre de Conexión
 
+Para finalizar la comunicación se cerró la conexión desde PacketSender y se observaron en Wireshark los segmentos correspondientes al cierre de TCP.
+
+En la captura obtenida, el cierre se produjo mediante **tres segmentos**, debido a que el servidor combinó las funciones de confirmación y finalización en un mismo segmento:
+
+1. El cliente envió un segmento con la bandera `FIN` ([captura](./assets/tcp-05-fin.png)).
+2. El servidor respondió con un segmento con las banderas `ACK` y `FIN` activadas simultáneamente ([captura](./assets/tcp-06-ack-fin.png)).
+3. El cliente respondió con un `ACK` final ([captura](./assets/tcp-07-ack-final.png)).
+
+Por lo tanto, aunque el procedimiento se conoce habitualmente como **Four-way handshake**, en esta captura se observaron tres paquetes debido a la combinación de los mensajes `ACK` y `FIN` enviados por el servidor.
 
 ### Conclusión sobre Seguridad
 
+La captura realizada permite observar directamente los segmentos que intercambian los extremos de una comunicación TCP, incluyendo información de control, puertos, números de secuencia, confirmaciones y datos de aplicación.
+
+Esto muestra que el tráfico de red puede ser analizado mediante herramientas como Wireshark cuando se tiene acceso a la interfaz por la que circula. Sin embargo, que los paquetes puedan ser capturados no implica necesariamente que su contenido pueda ser interpretado: en esta experiencia el mensaje `hola-tcp` era visible porque se transmitió sin cifrado.
+
+Por lo tanto, para proteger la información frente a la captura del tráfico es necesario utilizar mecanismos de **cifrado** en las capas correspondientes, de modo que los datos de aplicación no puedan ser interpretados directamente aunque los paquetes sean capturados.
 
 ---
 
