@@ -25,14 +25,14 @@
 
 ### Clasificación de Redes según su Alcance
 
-Las redes de datos se clasifican fundamentalmente a partir de su **alcance geográfico y escala de cobertura**, lo cual condiciona los medios físicos de transmisión, las velocidades, la latencia y si la administración es privada o provista por un operador de telecomunicaciones (*Carrier*):
+Las redes de computadoras y sistemas de comunicación de datos se clasifican fundamentalmente en función de su **alcance geográfico y escala de cobertura**. Esta diferenciación espacial no solo define el área física que abarca la red, sino que también determina las tecnologías de transmisión empleadas, la latencia, las velocidades de transferencia y el esquema de administración o propiedad.
 
 | Acrónimo | Denominación | Alcance Típico | Entorno y Aplicación Principal | Tecnologías Frecuentes | Gestión |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **BAN** | *Body Area Network* | $\approx 1\text{ m}$ | Red corporal para sensores médicos y *wearables* | BLE, IEEE 802.15.6, NFC | Privada / Personal |
+| **BAN** | *Body Area Network* | $\le 2\text{ m}$ | Red corporal para sensores médicos y *wearables* | BLE, IEEE 802.15.6, NFC | Privada / Personal |
 | **PAN** | *Personal Area Network* | $\le 10\text{ m}$ | Espacio de trabajo personal y periféricos | Bluetooth (802.15.1), Zigbee, USB | Privada / Personal |
 | **LAN** | *Local Area Network* | $10\text{ m} - 1\text{ km}$ | Hogares, oficinas o plantas fabriles | Ethernet (802.3), Wi-Fi (802.11) | Privada |
-| **CAN** | *Campus Area Network* | $1 - 5\text{ km}$ | Campus universitarios o complejos industriales | Dorsales de Fibra Óptica (10G/40G) | Privada |
+| **CAN** | *Campus Area Network* | $1 - 5\text{ km}$ | Campus universitarios o complejos industriales | Enlaces de fibra óptica, Gigabit Ethernet, switches de núcleo  | Privada |
 | **MAN** | *Metropolitan Area Network* | $5 - 50\text{ km}$ | Ámbito metropolitano o urbano (municipios) | Metro Ethernet, DWDM, fibra óptica | Proveedor / Consorcio |
 | **WAN** | *Wide Area Network* | $> 50\text{ km}$ (Global) | Interconexión regional, interurbana y global (Internet) | Fibra submarina, satélites, MPLS, BGP | Proveedores / *Carriers* |
 
@@ -40,82 +40,70 @@ Las redes de datos se clasifican fundamentalmente a partir de su **alcance geogr
 
 En correspondencia con los alcances métricos de la tabla, se asigna el acrónimo correspondiente en cada cuadro de la figura jerárquica:
 
-* **Cuadro 1 ($\le 10\text{ m}$):** **PAN** (*Personal Area Network*) [y **BAN** en escala corporal $< 2\text{ m}$].
+* **Cuadro 1 ($\le 10\text{ m}$):** **PAN** (*Personal Area Network*) [y **BAN** en escala corporal $\le 2\text{ m}$].
 * **Cuadro 2 ($10\text{ m} - 1\text{ km}$):** **LAN** (*Local Area Network*).
 * **Cuadro 3 ($1\text{ km} - 5\text{ km}$):** **CAN** (*Campus Area Network*).
 * **Cuadro 4 ($5\text{ km} - 50\text{ km}$):** **MAN** (*Metropolitan Area Network*).
 * **Cuadro 5 ($> 50\text{ km}$ / Global):** **WAN** (*Wide Area Network*).
 
-```
-+-----------------------------------------------------------------------------------------------+
-|  CUADRO 5: WAN (Wide Area Network)                                                            |
-|  Alcance: > 50 km (Regional, Nacional, Global / Internet)                                     |
-|                                                                                               |
-|      +---------------------------------------------------------------------------------+      |
-|      |  CUADRO 4: MAN (Metropolitan Area Network)                                      |      |
-|      |  Alcance: 5 km a 50 km (Ámbito Urbano / Metropolitano)                          |      |
-|      |                                                                                 |      |
-|      |      +-------------------------------------------------------------------+      |      |
-|      |      |  CUADRO 3: CAN (Campus Area Network)                              |      |      |
-|      |      |  Alcance: 1 km a 5 km (Campus Universitario / Complejo Industrial)|      |      |
-|      |      |                                                                   |      |      |
-|      |      |      +-----------------------------------------------------+      |      |      |
-|      |      |      |  CUADRO 2: LAN (Local Area Network)                 |      |      |      |
-|      |      |      |  Alcance: 10 m a 1 km (Edificio / Oficina / Residencia)|   |      |      |
-|      |      |      |                                                     |      |      |      |
-|      |      |      |      +---------------------------------------+      |      |      |      |
-|      |      |      |      |  CUADRO 1: PAN (Personal Area Network)|      |      |      |      |
-|      |      |      |      |  Alcance: <= 10 m (Espacio Personal)  |      |      |      |      |
-|      |      |      |      |                                       |      |      |      |      |
-|      |      |      |      |    +-----------------------------+    |      |      |      |      |
-|      |      |      |      |    |  BAN (Body Area Network)    |    |      |      |      |      |
-|      |      |      |      |    |  Alcance: < 2 m (Corporal)  |    |      |      |      |      |
-|      |      |      |      |    +-----------------------------+    |      |      |      |      |
-|      |      |      |      +---------------------------------------+      |      |      |      |
-|      |      |      +-----------------------------------------------------+      |      |      |
-|      |      +-------------------------------------------------------------------+      |      |
-|      +---------------------------------------------------------------------------------+      |
-+-----------------------------------------------------------------------------------------------+
-```
+<img src="./assets/clasificacion_acrónimos.png" style="width: 50%;" alt="Texto alternativo">
 
 ---
 
 ### Fundamentos y Clasificación de Redes LAN Virtuales (VLANs)
 
-Una **VLAN** (*Virtual Local Area Network*) es una subred lógica independiente configurada sobre una infraestructura de conmutación física común (switches de Capa 2), **con independencia de la ubicación física o del puerto al que se conecten los equipos**.
+Una **VLAN** (*Virtual Local Area Network*) es un dominio de difusión (*broadcast domain*) lógico independiente creado sobre una infraestructura física de conmutación de Capa 2. Permite agrupar dispositivos de red en la misma subred lógica sin importar si están conectados al mismo switch físico o a conmutadores situados en ubicaciones distantes.
 
-* **Propósitos Principales:**
-  1. **Segmentación de Broadcast:** Limita el tráfico de difusión a los miembros de la misma VLAN, reduciendo la saturación de la red.
-  2. **Seguridad y Aislamiento:** Impide el tráfico directo entre distintas VLANs en Capa 2, requiriendo un router o switch Capa 3 para comunicarse (donde se aplican ACLs y firewalls).
-  3. **Flexibilidad:** Permite reagrupar usuarios lógicamente sin alterar el cableado físico.
+### Propósitos y Beneficios Fundamentales
 
-* **Clasificación según Método de Asignación (*Membership*):**
-  * **Basadas en puerto (Estáticas):** Cada puerto físico del switch se asocia a un *VLAN ID*. Es el método estándar y más difundido.
-  * **Dinámicas (MAC, Protocolo o 802.1X):** La VLAN se asigna por dirección MAC, protocolo L3 o mediante autenticación centralizada RADIUS.
+1. **Aislamiento del Dominio de Difusión:** En una red conmutada tradicional, las tramas de difusión (*broadcast*) y multidifusión (*multicast*) se entregan a todos los puertos del switch. Una VLAN delimita el alcance de estas tramas únicamente a los hosts que forman parte de dicha VLAN, reduciendo la congestión y previniendo tormentas de difusión.
+2. **Seguridad y Control de Acceso:** La comunicación directa en Capa 2 entre hosts de diferentes VLANs está completamente bloqueada. Para comunicar distintas VLANs se requiere obligatoriamente un dispositivo de Capa 3 (router o switch L3), lo que permite aplicar listas de control de acceso (ACLs) y políticas de seguridad estrictas.
+3. **Flexibilidad Organizativa:** Permite reorganizar la estructura lógica de los departamentos o usuarios mediante software de administración sin tener que modificar físicamente el cableado de la infraestructura.
 
-* **Clasificación según Rol Funcional del Tráfico:**
-  * **VLAN de Datos:** Tráfico ordinario de usuarios (web, archivos, correo).
-  * **VLAN por Defecto:** VLAN a la que pertenecen todos los puertos al salir de fábrica (típicamente VLAN 1).
-  * **VLAN Nativa:** En enlaces troncales 802.1Q, es la VLAN asignada al tráfico que viaja **sin etiqueta (*untagged*)** para mantener compatibilidad con protocolos de control (STP, CDP).
-  * **VLAN de Administración:** Dedicada a la gestión remota del conmutador (SSH, HTTPS, SNMP) mediante una interfaz virtual (*SVI*, e.g., `interface vlan 99`).
-  * **VLAN de Voz:** Reservada para telefonía IP (VoIP), garantizando prioridad de Calidad de Servicio (QoS).
+### Clasificación según el Método de Asignación (*Membership*)
+
+* **VLANs Basadas en Puertos (Estáticas):** El administrador asigna manualmente cada puerto físico del switch a una VLAN específica. Es el método más utilizado debido a su simplicidad operativa.
+* **VLANs Basadas en Direcciones MAC (Dinámicas):** Los puertos se asignan dinámicamente según la dirección MAC del dispositivo que se conecta. Cuando un host se enchufa a cualquier puerto, el switch consulta su base de datos y le asigna la VLAN correspondiente.
+* **VLANs Basadas en Protocolo (Capa 3):** Clasifican el tráfico evaluando el campo EtherType de la cabecera de la trama (por ejemplo, separando tráfico IPv4 de IPv6).
+* **VLANs Basadas en Subred IP (Capa 3):** Evalúan la dirección IP de origen o la subred a la que pertenece el paquete para asignarle automáticamente la VLAN adecuada.
+
+### Clasificación según el Rol Funcional del Tráfico
+
+* **VLAN de Datos / Usuario:** Transporta exclusivamente el tráfico de datos generado por los usuarios finales (navegación web, correo electrónico, transferencia de archivos).
+* **VLAN Por Defecto (** **Default VLAN** **):** Es la VLAN configurada de fábrica en el conmutador a la que pertenecen inicialmente todos los puertos (típicamente la VLAN 1).
+* **VLAN Nativa:** Utilizada en los enlaces troncales 802.1Q para transportar tramas que **no llevan etiqueta** (*untagged*). Garantiza la compatibilidad con dispositivos que no soportan etiquetado o para tráfico de control del switch.
+* **VLAN de Administración (** **Management VLAN** **):** Red reservada específicamente para el acceso y gestión remota del conmutador (mediante SSH, SNMP o HTTPS) a través de una interfaz virtual de conmutación (SVI).
+* **VLAN de Voz (** **Voice VLAN** **):** VLAN dedicada al tráfico de telefonía IP (VoIP), configurada con mecanismos de Calidad de Servicio (QoS) para priorizar el tráfico de voz y minimizar el *jitter* y la latencia.
 
 ---
 
 ### Estándar IEEE 802.1Q y Mecanismo de Tagging
 
-Para transportar múltiples VLANs a través de un único enlace físico entre conmutadores (**enlace troncal o *trunk link***), el estándar abierto **IEEE 802.1Q** define un mecanismo universal de **etiquetado de tramas (*frame tagging*)**:
+El estándar **IEEE 802.1Q** especifica el mecanismo universal para la multiplexación de múltiples VLANs sobre una única línea física de interconexión entre switches o entre un switch y un router, proceso denominado troncalización de VLANs (VLAN trunking).
 
-* **Tagging:** El conmutador emisor inserta una etiqueta de 4 bytes (32 bits) dentro de la cabecera Ethernet al salir por un puerto troncal para identificar la VLAN de origen.
-* **Untagging:** El conmutador receptor remueve la etiqueta antes de entregar la trama al host final por un puerto de acceso, garantizando que el receptor reciba una trama Ethernet II normal.
+**Relación con las VLANs** 
+Sin el estándar IEEE 802.1Q, conectar dos conmutadores que albergan $N$ VLANs requeriría utilizar $N$ enlaces físicos y $N$ puertos dedicados en cada switch (un cable por cada VLAN). El protocolo 802.1Q resuelve este problema de escalabilidad mediante la troncalización: un único puerto y cable físico se configuran como un enlace troncal (trunk link) que pertenece a todas las VLANs y transporta el tráfico multiplexado de todas ellas.
+
+## Mecanismo de *Tagging* (Etiquetado) en IEEE 802.1Q
+
+El **Tagging** es el procedimiento mediante el cual el conmutador emisor inserta una etiqueta especial de 4 bytes (32 bits) dentro de la cabecera de la trama Ethernet original antes de transmitirla a través de un enlace troncal.
+
+Al recibir la trama etiquetada en el extremo opuesto del enlace troncal, el conmutador receptor examina el identificador de la VLAN (**VLAN ID**) dentro de la etiqueta para determinar a qué VLAN pertenece la trama, encamina la información internamente y **remueve la etiqueta** (*untagging*) antes de entregarla al puerto de acceso del destinatario final. De este modo, los sistemas terminales reciben tramas Ethernet estándar sin modificaciones.
+
+### Estructura de la Trama Ethernet Etiquetada (IEEE 802.1Q)
+
+**Trama Ethernet II Convencional (** **Untagged** **\- Máximo 1518 bytes):**
 
 ```
-Trama Ethernet II Original (Untagged):
 +-------------------+-------------------+--------------------+------------------------+----------+
 |  MAC Destino (6B) |   MAC Origen (6B) | EtherType/Len (2B) |     Datos / Carga Útil | FCS (4B) |
 +-------------------+-------------------+--------------------+------------------------+----------+
 
-Trama Etiquetada IEEE 802.1Q (Tagged):
+```
+
+**Trama Etiquetada IEEE 802.1Q (** **Tagged** **\- Máximo 1522 bytes):**
+
+```
 +-------------------+-------------------+----------------+--------------------+------------------------+----------+
 |  MAC Destino (6B) |   MAC Origen (6B) | Tag 802.1Q(4B) | EtherType/Len (2B) |     Datos / Carga Útil | FCS (4B) |
 +-------------------+-------------------+----------------+--------------------+------------------------+----------+
@@ -124,18 +112,22 @@ Trama Etiquetada IEEE 802.1Q (Tagged):
             |   TPID (16 bits)   |  PCP (3 bits)  | DEI (1 bit)     |  VID (12 bits)    |
             |       0x8100       | Prioridad QoS  | Descarte eleg.  |  VLAN ID (0-4095) |
             +--------------------+----------------+-----------------+-------------------+
+
 ```
 
-* **Estructura del Tag 802.1Q (4 bytes / 32 bits):**
-  1. **TPID (16 bits):** Valor fijo `0x8100` que identifica la presencia de una etiqueta 802.1Q.
-  2. **TCI (16 bits):**
-     - **PCP (3 bits):** Prioridad de Calidad de Servicio (QoS) bajo IEEE 802.1p (8 niveles, 0 a 7).
-     - **DEI (1 bit):** Indicador de trama elegible para descarte en situaciones de congestión.
-     - **VID (12 bits):** Identificador numérico de VLAN ($2^{12} = 4096$ identificadores posibles, rangos operativos 1 a 4094).
+**Campos de la Etiqueta 802.1Q (4 Bytes / 32 Bits)**
+1. **TPID (Tag Protocol Identifier - 16 bits):** Contiene el valor hexadecimal fijo 0x8100, el cual indica la presencia de una cabecera de etiquetado VLAN IEEE 802.1Q.
 
-* **Consideraciones Operativas:**
-  - **Tamaño de trama:** La etiqueta incrementa la longitud máxima de 1518 a **1522 bytes** (*Baby Giant Frames*), forzando al switch a **recalcular el FCS (CRC-32)**.
-  - **Tráfico sin etiqueta (*Untagged*):** El tráfico de la VLAN nativa transita sin etiqueta por el troncal. Si un switch recibe una trama sin etiqueta en un troncal, la asigna a su VLAN nativa.
+2. **TCI (Tag Control Information - 16 bits):** 
+    * **PCP (Priority Code Point - 3 bits):** Especifica la prioridad de la trama bajo el estándar IEEE 802.1p para aplicar políticas de Calidad de Servicio (QoS) en Capa 2 (ofrece 8 niveles de prioridad, de 0 a 7).
+    
+    - **DEI (Drop Eligible Indicator - 1 bit):** Anteriormente conocido como CFI (Canonical Format Indicator), indica si la trama puede ser descartada en presencia de congestión en la red.
+    
+    * **VID (VLAN Identifier - 12 bits):** Identifica de manera unívoca la VLAN a la que pertenece la trama29. Al disponer de 12 bits, permite definir hasta $2^{12} = 4096$ VLANs (con un rango operativo útil de 1 a 4094).
+    
+**Consideraciones Operativas de la Cabecera 802.1Q**
+* **Extensión de Tamaño de Trama:** La inclusión de la etiqueta de 4 bytes incrementa el tamaño máximo de la trama Ethernet de 1518 a 1522 bytes.
+- **Recálculo del FCS:** Puesto que la cabecera de la trama se modifica al insertar la etiqueta, el switch emisor debe recalcular la secuencia de comprobación de trama (FCS / CRC-32) antes de enviarla por el puerto troncal.
 
 ---
 
