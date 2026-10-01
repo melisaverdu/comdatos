@@ -108,10 +108,10 @@ Al recibir la trama etiquetada en el extremo opuesto del enlace troncal, el conm
 |  MAC Destino (6B) |   MAC Origen (6B) | Tag 802.1Q(4B) | EtherType/Len (2B) |     Datos / Carga Útil | FCS (4B) |
 +-------------------+-------------------+----------------+--------------------+------------------------+----------+
                                                 |
-            +-----------------------------------+-----------------------------------+
-            |   TPID (16 bits)   |  PCP (3 bits)  | DEI (1 bit)     |  VID (12 bits)    |
-            |       0x8100       | Prioridad QoS  | Descarte eleg.  |  VLAN ID (0-4095) |
-            +--------------------+----------------+-----------------+-------------------+
+            +------------------+----------------+----------------+------------------+
+            |  TPID (16 bits)  |  PCP (3 bits)  |   DEI (1 bit)  |  VID (12 bits)   |
+            |      0x8100      | Prioridad QoS  | Descarte eleg. | VLAN ID (0-4095) |
+            +------------------+----------------+----------------+------------------+
 
 ```
 
