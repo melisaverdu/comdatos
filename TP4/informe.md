@@ -176,11 +176,51 @@ Al estar la interfaz de gestión inactiva por falta de conexión física, el con
 
 ### Diseño Arquitectónico, VLANs y Servidor de Entretenimiento Local
 
+La topologia se diseño bajo una arquitectura jerarquica en estrella respaldada por un Switch principal(**Sw**) y un Router principal (**Router Aircraft**). La red fue segmentada logicamente mediante IEEE 802.1Q en tres VLANs para separar el trafico segun el perfil del usuario:
+
+- **VLAN 10(Turista - Red 10.10.10.0/24)**: Asignada a los puertos de accesso **Fa0/3** a **Fa0/5** para los pasajeros de clase turista
+
+- **VLAN 20(Bussiness - Red 10.10.20.0/24)**: Asignada a los puertos de acceso **Fa0/6** a **Fa0/7** para pasajeros de clase ejecutiva
+
+- **VLAN 10(Administracion - Red 10.10.99.0/24)**: Asignada al puerto Fa0/8 para la gestion de la aeronave. En esta red se conecto el **Servidor de entretenimiento** mediante el puerto **Fa0/2** con la IP estatica **10.10.99.10**, publicando un servicio web local HTTP para la reproduccion de contenido multimedia.
+
 ### Ruteo Inter-VLAN (Router-on-a-Stick), Servicio DHCP y Traducción NAT
+
+El enlace entre el puerto **Fa0/1** del Switch y la interfaz **GigabitEthernet0/1** del Router se configuro en modo troncal, oermitiendo la transmision etiquetada de todas las VLANs
+
+El enrutamiento inter-VLAN se implemento mediante **Router-on-a-Stick**, creando las tres subinterfaces logicas en el Router(Gi0/1.10 , Gi0/1.20 , Gi0/1.99), las cuales actuan como los Gateway predeterminados (.1) de cada segmento. Asimismo, el Router se configuró como servidor DHCP centralizado para asignar direcciones IP dinámicas a los clientes de las tres clases.
+
+Para el acceso a Internet, la interfaz WAN GigabitEthernet0/0 (200.0.0.1/30) se vinculó al enlace del proveedor (ISP) en 200.0.0.2, aplicando **NAT Overload** (Traducción de Direcciones de Red) sobre las redes autorizadas para compartir la dirección IP pública de salida.
 
 ### Políticas de Control de Acceso mediante Listas de Control de Acceso (ACL)
 
+Para garantizar la seguridad de la información y la política comercial del vuelo, se implementó una Lista de Control de Acceso Estándar/Extendida (ACL 100) aplicada de forma entrante en la subinterfaz Gi0/1.10 (Turista):
+
+- **Permisos**: Se permite el tráfico interno hacia las
+demás subredes para dar acceso al Servidor de Entretenimiento (10.10.99.10).
+- **Restricciones**: Se deniega explícitamente el tráfico con destino al rango público/ISP (200.0.0.0/30 y DNS 8.8.8.8).
+- Las redes Business (VLAN 20) y Administración (VLAN99) cuentan con acceso sin restricciones a Internet y recursos locales.
+
 ### Matriz de Pruebas, Validación de Tráfico y Resultados
+
+Se realizaron pruebas sistemáticas desde las distintas estaciones de trabajo para validar los requisitos de conectividad:
+
+- **Acceso Web al Servidor Local**: Desde los navegadores web de PCs en VLAN 10, 20 y 99 se accedió exitosamente a [http://10.10.99.10](http://10.10.99.10), cargando el portal de entretenimiento a bordo.
+
+![Acceso de PC Turista a sitio web local](./assets/Punto3_accesso_PC_turista_HTML.png)
+![Acceso de PC Bussiness a sitio web local](./assets/Punto3_accesso_PC_bussiness_HTML.png)
+
+- **Prueba de Aislamiento de Internet (Turista)**: La simulación de ping 8.8.8.8 desde la PC de Turista devolvió un mensaje de Destination host unreachable emitido por el Gateway (10.10.10.1), ratificando el bloqueo correcto por la ACL 100.
+
+![Ping a Internet(8.8.8.8) desde PC Turista](./assets/Punto3_ping_PC_turista_internet.png)
+
+- **Prueba de Salida a Internet (Business)**: La ejecución de ping 8.8.8.8 desde la estacion de Business resultó en trazas de eco exitosas, confirmando el funcionamiento del NAT Overload.
+
+![Ping a Internet(8.8.8.8) desde PC Bussiness](./assets/Punto3_ping_PC_bussiness_internet.png)
+
+- **Conectividad de Administración**: La PC de Administración ejecutó ping exitosos hacia todas las direcciones IP de la topología, demostrando alcance total en la red.
+
+![Ping a Todos desde PC Admin](./assets/Punto3_ping_PC_admin_todos.png)
 
 ---
 
