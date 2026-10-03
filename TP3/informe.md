@@ -1,6 +1,8 @@
-# Trabajo Práctico N° 3 - Redes de Computadoras
+![](/assets/2_1_Isologotipo_FCEFyN_y_UNC-_blanco_Sin_fondo-Con_bajada.png)
 
-**Integrantes:**
+# Trabajo Práctico N.º 3: Capas de Enlace de Datos, Red y Transporte
+
+**Alumnos**
 - García, Lautaro Misael 
 - Pastrana Lizárraga, Iván
 - Peretti, Federico Ariel
@@ -9,43 +11,54 @@
 
 ---
 
+### Índice
+
+1. [Organización de la Información en la Red Local](#organización-de-la-información-en-la-red-local)
+2. [Captura e Inspección de Tráfico con Wireshark](#captura-e-inspección-de-tráfico-con-wireshark)
+3. [Capa de Transporte y Protocolo TCP](#capa-de-transporte-y-protocolo-tcp)
+4. [Comunicación con Servidor en la Nube y Validación de Grupo](#comunicación-con-servidor-en-la-nube-y-validación-de-grupo)
+5. [Conclusión](#conclusión)
+6. [Referencias](#referencias)
+
+---
+
 ## Organización de la Información en la Red Local
 
 ### Función de la capa de enlace y tipo de comunicación
 
-La capa de enlace de datos(Capa 2) se encarga de la transferencia confiable de datos a traves del medio físico. Sus funciones principales son la detección y corrección de errores, la delimitación de tramas y control de acceso al medio(MAC) y gestión de flujos de datos.
+La capa de enlace de datos (Capa 2) se encarga de la transferencia de datos a través del medio físico. Sus funciones principales son la delimitación de tramas, el control de acceso al medio (MAC), el direccionamiento físico y la detección de errores.
 
-Resuelve la comunicación de **nodo a nodo** dentro de una misma red local(LAN). Solo se encarga de llevar los datos entre dispositivos adyacentes conectados al mismo segmento físico o lógico
+Resuelve la comunicación de **nodo a nodo** dentro de una misma red local (LAN). Solo se encarga de llevar los datos entre dispositivos adyacentes conectados al mismo segmento físico o lógico.
 
 ### Dirección MAC vs. Dirección IP
 
-Las direcciones MAC(Media Access Control) es un identificador único de 48 bits asignado por el fabricante a la tarjeta de interfaz de red(NIC) del dispositivo. Es una dirección **física** y **permanente**
+La dirección MAC (Media Access Control) es un identificador de 48 bits asignado de fábrica a la tarjeta de interfaz de red (NIC) del dispositivo. Es una dirección **física** (grabada en hardware, aunque modificable por software).
 
 Las diferencias principales con las direcciones IP son:
 
-- Capa OSI: La MAC trabaja en la capa 2(Enlace), mientras que la IP trabaja en la capa 3(Red)
+- Capa OSI: La MAC trabaja en la capa 2 (Enlace), mientras que la IP trabaja en la capa 3 (Red).
 
-- La dirección MAC es física e inmutable mientras que la dirección IP es lógica y dinámica
+- La dirección MAC es física y de estructura plana, mientras que la dirección IP es lógica y jerárquica.
 
-- La dirección MAC se utiliza solo para direccionar paquetes dentro de la misma red local mientras que la IP se utiliza para enrutar paquetes a traves de diferentes redes e internet
+- La dirección MAC se utiliza para direccionar **tramas** dentro de la misma red local, mientras que la IP se utiliza para enrutar **paquetes** a través de diferentes redes e internet.
 
 ### Trama Ethernet y sus campos
 
-- **Preámbulo y SFD(Start Frame Delimiter)** 8 bytes en total. Sirven para sincronizar los relojes del emisor y el receptor, e indicar el inicio exacto de la trama.
+- **Preámbulo y SFD (Start Frame Delimiter)**: 8 bytes en total. Sirven para sincronizar los relojes del emisor y el receptor, e indicar el inicio exacto de la trama.
 
-- **Dirección MAC de destino**: 6 bytes. Indica la dirección física del dispositivo receptor
+- **Dirección MAC de destino**: 6 bytes. Indica la dirección física del dispositivo receptor.
 
-- **Dirección MAC de origen** : 6 bytes . indica la dirección física del emisor
+- **Dirección MAC de origen**: 6 bytes. Indica la dirección física del emisor.
 
-- **Tipo/Ethertype**: 2 bytes, indican que protocolo de capa 3 viene encapsulado dentro de los datos
+- **Tipo/EtherType**: 2 bytes, indican qué protocolo de capa 3 viene encapsulado dentro de los datos.
 
-- **Datos y relleno**: de 46 a 1500 bytes, contiene la información de capas superiores, si los datos son de menos de 46 bytes se agrega un relleno para cumplir con la longitud minima de la trama
+- **Datos y relleno**: de 46 a 1500 bytes, contiene la información de capas superiores; si los datos son menores a 46 bytes se agrega un relleno para cumplir con la longitud mínima de la trama.
 
-- **Secuencia de verificación de trama**: 4 bytes para un código de comprobación de redundancia cíclica utilizado por el receptor para verificar se la trama sufrió corrupción de datos durante la transmisión
+- **Secuencia de verificación de trama (FCS)**: 4 bytes para un código de comprobación de redundancia cíclica (CRC-32) utilizado por el receptor para verificar si la trama sufrió corrupción durante la transmisión.
 
 ### Determinación del protocolo de capa superior
 
-La información que permite determinar que protocolo de capa superior esta transportando una trama Ethernet es el campo EtherType de la trama Ethernet, que contiene un valor numérico hexadecimal que especifica el protocolo encapsulado en la carga util
+La información que permite determinar qué protocolo de capa superior está transportando una trama Ethernet es el campo **EtherType**, que contiene un valor numérico hexadecimal que especifica el protocolo encapsulado en la carga útil (por ejemplo, `0x0800` para IPv4).
 
 ---
 
@@ -234,4 +247,10 @@ La respuesta obtenida fue registrada también en la pestaña correspondiente de 
 
 ---
 
-## Conclusiones Generales
+## Conclusión
+
+El desarrollo del trabajo práctico permitió comprender de forma integrada el rol y la complementariedad de las capas de Enlace, Red y Transporte en una comunicación digital. Se afianzó la distinción entre el direccionamiento físico dentro de una red local y el direccionamiento lógico necesario para conectar extremos a través de múltiples redes. Asimismo, se evidenció la importancia de contar con protocolos que garanticen confiabilidad, orden y control en la entrega de datos, así como la necesidad fundamental de incorporar mecanismos de seguridad y cifrado para resguardar la información que circula a través del medio.
+
+## Referencias
+
+[1] Kurose, James F., Ross, Keith W., Computer Networking: A Top-Down Approach, 8.ª edición, Pearson, Cap. 6: Data Link Layer and LANs.
