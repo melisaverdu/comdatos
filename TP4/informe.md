@@ -226,6 +226,12 @@ Se realizaron pruebas sistemáticas desde las distintas estaciones de trabajo pa
 
 ## Conclusión
 
+El trabajo permitió pasar de la teoría de las redes locales a su implementación y validación práctica. Primero se clasificaron las redes según su alcance y se estudiaron las **VLANs** y el estándar **IEEE 802.1Q**, que permite crear dominios de broadcast lógicos independientes y transportarlos por un único enlace troncal.
+
+En la implementación con dos switches, las fallas de conectividad que aparecieron al segmentar la red sin un enlace troncal confirmaron que una VLAN aísla efectivamente el tráfico y que se necesita un trunk 802.1Q para extenderla entre equipos. Luego, la red a bordo de la aeronave integró **VLANs, Router-on-a-Stick, DHCP, NAT Overload y ACLs** para ofrecer servicios diferenciados por clase de pasajero.
+
+La matriz de pruebas validó el diseño. Todas las clases accedieron al servidor de entretenimiento local, Business y Administración salieron a Internet mediante NAT, y Turista quedó bloqueado por la ACL 100. Además, el análisis del TTL permitió distinguir el tráfico conmutado dentro de una misma VLAN (TTL 128) del enrutado entre VLANs (TTL 127). En síntesis, se demostró que es posible construir una red segura, ordenada y escalable sobre una única infraestructura física.
+
 ---
 
 ## Referencias
