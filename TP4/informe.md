@@ -46,7 +46,7 @@ En correspondencia con los alcances métricos de la tabla, se asigna el acrónim
 * **Cuadro 4 ($5\text{ km} - 50\text{ km}$):** **MAN** (*Metropolitan Area Network*).
 * **Cuadro 5 ($> 50\text{ km}$ / Global):** **WAN** (*Wide Area Network*).
 
-<img src="./assets/clasificacion_acrónimos.png" style="width: 50%;" alt="Texto alternativo">
+<img src="./assets/clasificacion_acrónimos.png" style="width: 50%;" alt="Figura de clasificación de redes según su alcance">
 
 ---
 
@@ -84,7 +84,7 @@ El estándar **IEEE 802.1Q** especifica el mecanismo universal para la multiplex
 **Relación con las VLANs** 
 Sin el estándar IEEE 802.1Q, conectar dos conmutadores que albergan $N$ VLANs requeriría utilizar $N$ enlaces físicos y $N$ puertos dedicados en cada switch (un cable por cada VLAN). El protocolo 802.1Q resuelve este problema de escalabilidad mediante la troncalización: un único puerto y cable físico se configuran como un enlace troncal (trunk link) que pertenece a todas las VLANs y transporta el tráfico multiplexado de todas ellas.
 
-## Mecanismo de *Tagging* (Etiquetado) en IEEE 802.1Q
+### Mecanismo de *Tagging* (Etiquetado) en IEEE 802.1Q
 
 El **Tagging** es el procedimiento mediante el cual el conmutador emisor inserta una etiqueta especial de 4 bytes (32 bits) dentro de la cabecera de la trama Ethernet original antes de transmitirla a través de un enlace troncal.
 
@@ -123,7 +123,7 @@ Al recibir la trama etiquetada en el extremo opuesto del enlace troncal, el conm
     
     - **DEI (Drop Eligible Indicator - 1 bit):** Anteriormente conocido como CFI (Canonical Format Indicator), indica si la trama puede ser descartada en presencia de congestión en la red.
     
-    * **VID (VLAN Identifier - 12 bits):** Identifica de manera unívoca la VLAN a la que pertenece la trama29. Al disponer de 12 bits, permite definir hasta $2^{12} = 4096$ VLANs (con un rango operativo útil de 1 a 4094).
+    * **VID (VLAN Identifier - 12 bits):** Identifica de manera unívoca la VLAN a la que pertenece la trama. Al disponer de 12 bits, permite definir hasta $2^{12} = 4096$ VLANs (con un rango operativo útil de 1 a 4094).
     
 **Consideraciones Operativas de la Cabecera 802.1Q**
 * **Extensión de Tamaño de Trama:** La inclusión de la etiqueta de 4 bytes incrementa el tamaño máximo de la trama Ethernet de 1518 a 1522 bytes.
@@ -333,8 +333,20 @@ El trabajo permitió pasar de la teoría de las redes locales a su implementaci�
 
 En la implementación con dos switches, las fallas de conectividad que aparecieron al segmentar la red sin un enlace troncal confirmaron que una VLAN aísla efectivamente el tráfico y que se necesita un trunk 802.1Q para extenderla entre equipos. Luego, la red a bordo de la aeronave integró **VLANs, Router-on-a-Stick, DHCP, NAT Overload y ACLs** para ofrecer servicios diferenciados por clase de pasajero.
 
-La matriz de pruebas validó el diseño. Todas las clases accedieron al servidor de entretenimiento local, Business y Administración salieron a Internet mediante NAT, y Turista quedó bloqueado por la ACL 100. Además, el análisis del TTL permitió distinguir el tráfico conmutado dentro de una misma VLAN (TTL 128) del enrutado entre VLANs (TTL 127). En síntesis, se demostró que es posible construir una red segura, ordenada y escalable sobre una única infraestructura física.
+La matriz de pruebas validó el diseño. Los clientes obtuvieron su configuración IP por DHCP, todas las clases accedieron al servidor de entretenimiento local, Business salió a Internet mediante NAT Overload, Turista quedó bloqueado por la ACL 100 y Administración alcanzó los gateways de todos los segmentos. En síntesis, se demostró que es posible construir una red segura, ordenada y escalable sobre una única infraestructura física.
 
 ---
 
 ## Referencias
+
+[1] Kurose, James F., Ross, Keith W., Computer Networking: A Top-Down Approach, 8.ª edición, Pearson, Cap. 4: The Network Layer: Data Plane (DHCP y NAT) y Cap. 6: The Link Layer and LANs (VLANs y switches).
+
+[2] Tanenbaum, Andrew S., Wetherall, David J., Computer Networks, 5.ª edición, Pearson, Cap. 1: Introduction (clasificación de redes por escala) y Cap. 4: The Medium Access Control Sublayer (VLANs e IEEE 802.1Q).
+
+[3] IEEE Std 802.1Q-2022, *IEEE Standard for Local and Metropolitan Area Networks — Bridges and Bridged Networks*, IEEE.
+
+[4] Droms, R., *Dynamic Host Configuration Protocol*, RFC 2131, IETF, 1997. https://www.rfc-editor.org/rfc/rfc2131
+
+[5] Srisuresh, P., Egevang, K., *Traditional IP Network Address Translator (Traditional NAT)*, RFC 3022, IETF, 2001. https://www.rfc-editor.org/rfc/rfc3022
+
+[6] Cisco Networking Academy, *CCNA: Switching, Routing, and Wireless Essentials* (VLANs, enrutamiento inter-VLAN y DHCPv4) y *CCNA: Enterprise Networking, Security, and Automation* (ACLs y NAT).
