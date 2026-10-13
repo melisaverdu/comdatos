@@ -339,14 +339,8 @@ La matriz de pruebas validó el diseño. Los clientes obtuvieron su configuraci�
 
 ## Referencias
 
-[1] Kurose, James F., Ross, Keith W., Computer Networking: A Top-Down Approach, 8.ª edición, Pearson, Cap. 4: The Network Layer: Data Plane (DHCP y NAT) y Cap. 6: The Link Layer and LANs (VLANs y switches).
+[1] Stallings, William, Comunicaciones y Redes de Computadores, 7.ª edición, Pearson Educación / Prentice Hall.
 
-[2] Tanenbaum, Andrew S., Wetherall, David J., Computer Networks, 5.ª edición, Pearson, Cap. 1: Introduction (clasificación de redes por escala) y Cap. 4: The Medium Access Control Sublayer (VLANs e IEEE 802.1Q).
+[2] Comer, Douglas E., Internetworking with TCP/IP Volume One: Principles, Protocols, and Architecture, 6.ª edición, Addison-Wesley.
 
-[3] IEEE Std 802.1Q-2022, *IEEE Standard for Local and Metropolitan Area Networks — Bridges and Bridged Networks*, IEEE.
-
-[4] Droms, R., *Dynamic Host Configuration Protocol*, RFC 2131, IETF, 1997. https://www.rfc-editor.org/rfc/rfc2131
-
-[5] Srisuresh, P., Egevang, K., *Traditional IP Network Address Translator (Traditional NAT)*, RFC 3022, IETF, 2001. https://www.rfc-editor.org/rfc/rfc3022
-
-[6] Cisco Networking Academy, *CCNA: Switching, Routing, and Wireless Essentials* (VLANs, enrutamiento inter-VLAN y DHCPv4) y *CCNA: Enterprise Networking, Security, and Automation* (ACLs y NAT).
+[3] Kurose, James F., Ross, Keith W., Redes de computadoras: Un enfoque descendente, 7.ª edición, Pearson Educación.
