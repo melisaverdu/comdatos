@@ -33,4 +33,4 @@ Recursos gráficos y capturas de pantalla utilizadas en el informe:
 * Figura de clasificación de redes por alcance.
 * Topología, tabla de direccionamiento y capturas de configuración y verificación de los switches (`show running-config`, `show vlan brief`, `show ip interface brief`).
 * Capturas de las pruebas de conectividad (`ping`) entre PCs y entre switches.
-* Capturas de la red de la aeronave: asignación por DHCP, acceso web al servidor local y pruebas de salida a Internet por clase.
+* Capturas de la red de la aeronave: topología, verificación del troncal y las VLANs del switch, asignación por DHCP, acceso web al servidor local y pruebas de salida a Internet por clase.

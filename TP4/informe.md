@@ -278,11 +278,17 @@ Al estar la interfaz de gestión inactiva por falta de conexión física, el con
 
 La topología se diseñó bajo una arquitectura jerárquica en estrella respaldada por un Switch principal (**Sw**) y un Router principal (**Router Aircraft**). La red fue segmentada lógicamente mediante IEEE 802.1Q en tres VLANs para separar el tráfico según el perfil del usuario:
 
+![Topología de la red LAN de la aeronave](./assets/Punto3_topologia.png)
+
 - **VLAN 10 (Turista - Red 10.10.10.0/24)**: Asignada a los puertos de acceso **Fa0/3** a **Fa0/5** para los pasajeros de clase turista.
 
 - **VLAN 20 (Business - Red 10.10.20.0/24)**: Asignada a los puertos de acceso **Fa0/6** a **Fa0/7** para pasajeros de clase ejecutiva.
 
 - **VLAN 99 (Administración - Red 10.10.99.0/24)**: Asignada a los puertos de acceso **Fa0/2** y **Fa0/8** para la infraestructura y gestión de la aeronave. En esta red se conectó el **Servidor de entretenimiento** mediante el puerto **Fa0/2** con la IP estática **10.10.99.10**, publicando un servicio web local HTTP para la reproducción de contenido multimedia, y la estación de trabajo de administración mediante el puerto **Fa0/8**.
+
+La configuración del switch se verificó con `show interfaces trunk` y `show vlan brief`: el puerto **Fa0/1** opera como troncal con encapsulación 802.1Q y transporta las VLANs 1, 10, 20 y 99, mientras que cada puerto de acceso figura asignado a la VLAN correspondiente.
+
+![Verificación del enlace troncal y de las VLANs en el switch](./assets/Punto3_sw_trunk_vlan.png)
 
 ### Ruteo Inter-VLAN (Router-on-a-Stick), Servicio DHCP y Traducción NAT
 
@@ -296,15 +302,23 @@ Para el acceso a Internet, la interfaz WAN GigabitEthernet0/0 (`200.0.0.1/30`) s
 
 Para garantizar la seguridad de la información y la política comercial del vuelo, se implementó una **Lista de Control de Acceso Extendida (ACL 100)** aplicada de forma entrante (`in`) en la subinterfaz **Gi0/1.10** (Turista):
 
+```
+Extended IP access list 100
+    5 permit udp any any eq bootps
+    10 permit ip 10.10.10.0 0.0.0.255 10.10.0.0 0.0.255.255
+    20 deny ip 10.10.10.0 0.0.0.255 any
+```
+
+- **DHCP**: La regla 5 permite las solicitudes DHCP de los clientes Turista. Estas se envían con origen `0.0.0.0` y destino `255.255.255.255`, por lo que no coinciden con la regla 10 y, sin esta excepción, serían descartadas por la ACL, dejando a las PCs con una dirección autoconfigurada (`169.254.x.x`).
 - **Permisos**: Se permite el tráfico interno originado en la red Turista hacia las demás subredes para dar acceso al Servidor de Entretenimiento (`10.10.99.10`) y permitir la comunicación interna (`10.10.0.0/16`).
-- **Restricciones**: Se deniega el tráfico con destino a redes externas e Internet. Al permitir únicamente las redes internas locales, todo tráfico dirigido hacia Internet es bloqueado por la regla de descarte implícito (`deny ip any any`) al final de la ACL (además de la denegación explícita al bloque público del ISP y servidores externos como `8.8.8.8`). Asimismo, la lista de acceso asociada al proceso de **NAT Overload** excluye intencionalmente a la subred de Turista (`10.10.10.0/24`), impidiendo la traducción y salida hacia Internet.
+- **Restricciones**: La regla 20 deniega todo el resto del tráfico originado en la red Turista, es decir, el dirigido a redes externas e Internet. Asimismo, la lista de acceso estándar 1, asociada al proceso de **NAT Overload**, solo incluye a las subredes Business (`10.10.20.0/24`) y Administración (`10.10.99.0/24`), por lo que la subred Turista tampoco sería traducida para salir a Internet.
 - Las redes Business (VLAN 20) y Administración (VLAN 99) cuentan con acceso sin restricciones a Internet y recursos locales.
 
 ### Matriz de Pruebas, Validación de Tráfico y Resultados
 
 Se realizaron pruebas sistemáticas desde las distintas estaciones de trabajo para validar los requisitos de conectividad:
 
-- **Asignación Dinámica de Direcciones (DHCP)**: Mediante el comando `ipconfig /all` en la estación de trabajo cliente (PC Turista), se validó la correcta asignación automática de la dirección IP (`10.10.10.13`), máscara de subred (`255.255.255.0`), gateway predeterminado (`10.10.10.1`) y servidor DHCP configurado en el router.
+- **Asignación Dinámica de Direcciones (DHCP)**: Las tres PCs Turista obtuvieron sus direcciones por DHCP (`10.10.10.11` a `10.10.10.13`). Mediante el comando `ipconfig /all` en la Pc-Turista1 se validó la correcta asignación automática de la dirección IP (`10.10.10.11`), máscara de subred (`255.255.255.0`), gateway predeterminado (`10.10.10.1`) y servidor DHCP configurado en el router.
 
 ![Verificación de configuración IP por DHCP en cliente Turista](./assets/Punto3_dhcp_ipconfig.png)
 
@@ -321,9 +335,9 @@ Se realizaron pruebas sistemáticas desde las distintas estaciones de trabajo pa
 
 ![Ping a Internet (8.8.8.8) desde PC Business](./assets/Punto3_ping_PC_bussiness_internet.png)
 
-- **Conectividad de Administración**: La PC de Administración ejecutó pings exitosos hacia los gateways predeterminados de cada una de las subinterfaces en el router (`10.10.10.1`, `10.10.20.1` y `10.10.99.1`), demostrando la conectividad inter-VLAN y el ruteo hacia todos los segmentos de la topología.
+- **Conectividad de Administración**: La PC de Administración ejecutó pings exitosos hacia una PC Turista (`10.10.10.11`), una PC Business (`10.10.20.11`), el Servidor de Entretenimiento (`10.10.99.10`) e Internet (`8.8.8.8`), demostrando alcance total sobre la red local y salida a Internet mediante NAT Overload. El primer paquete hacia las otras VLANs se pierde mientras se resuelven las direcciones MAC por ARP. Además, el TTL de las respuestas permite distinguir el tráfico conmutado dentro de la misma VLAN (servidor, TTL 128) del enrutado entre VLANs por el router (PCs Turista y Business, TTL 127).
 
-![Ping a los gateways desde PC Admin](./assets/Punto3_ping_PC_admin_todos.png)
+![Ping a todos los segmentos desde PC Admin](./assets/Punto3_ping_PC_admin_todos.png)
 
 ---
 
@@ -333,7 +347,7 @@ El trabajo permitió pasar de la teoría de las redes locales a su implementaci�
 
 En la implementación con dos switches, las fallas de conectividad que aparecieron al segmentar la red sin un enlace troncal confirmaron que una VLAN aísla efectivamente el tráfico y que se necesita un trunk 802.1Q para extenderla entre equipos. Luego, la red a bordo de la aeronave integró **VLANs, Router-on-a-Stick, DHCP, NAT Overload y ACLs** para ofrecer servicios diferenciados por clase de pasajero.
 
-La matriz de pruebas validó el diseño. Los clientes obtuvieron su configuración IP por DHCP, todas las clases accedieron al servidor de entretenimiento local, Business salió a Internet mediante NAT Overload, Turista quedó bloqueado por la ACL 100 y Administración alcanzó los gateways de todos los segmentos. En síntesis, se demostró que es posible construir una red segura, ordenada y escalable sobre una única infraestructura física.
+La matriz de pruebas validó el diseño. Los clientes obtuvieron su configuración IP por DHCP, todas las clases accedieron al servidor de entretenimiento local, Business y Administración salieron a Internet mediante NAT Overload, Turista quedó bloqueado por la ACL 100 y Administración alcanzó todos los segmentos. Además, el análisis del TTL permitió distinguir el tráfico conmutado dentro de una misma VLAN (TTL 128) del enrutado entre VLANs (TTL 127). En síntesis, se demostró que es posible construir una red segura, ordenada y escalable sobre una única infraestructura física.
 
 ---
 
