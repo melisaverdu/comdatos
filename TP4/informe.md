@@ -149,11 +149,12 @@ Topología implementada:
 Se realizó la configuración inicial y el endurecimiento (*hardening*) de la seguridad en los switches `SW-1` y `SW-2` aplicando las convenciones de administración estándar de Cisco IOS.
 
 #### 1. Protección de Accesos y Cifrado de Credenciales
-Se configuraron las credenciales de administración para restringir el acceso local y remoto en ambos dispositivos:
+Desde la terminal de cada computadora, conectada por cable de consola, se ingresó al modo de configuración global de cada switch y se configuraron su nombre y las credenciales de administración para restringir el acceso local y remoto:
+- **Nombre del dispositivo:** Se asignaron los nombres `sw1` y `sw2` mediante el comando `hostname`.
 - **Modo EXEC Privilegiado:** Se asignó la contraseña protegida `class` mediante el comando `enable secret`.
 - **Líneas de Consola y VTY (`0 15`):** Se aseguró el acceso físico por puerto serial y el acceso remoto por red mediante la clave `cisco` y la directiva `login`.
 
-![Configuración de contraseñas de consola y VTY en SW-1](./assets/puntos_a_b.png)
+![Configuración del nombre y de las contraseñas de consola y VTY en SW-1](./assets/puntos_a_b.png)
 
 Para evitar la exposición de credenciales en texto plano al inspeccionar el archivo de configuración activa (`running-config`), se habilitó la función global `service password-encryption`. Este mecanismo aplica un algoritmo de cifrado reversible sobre todas las contraseñas almacenadas no encriptadas.
 
@@ -167,13 +168,12 @@ Se habilitó la Interfaz Virtual de Switch (SVI) sobre la VLAN 1 por defecto par
 ![Configuración IP de la SVI VLAN 1 en SW-1](./assets/punto_d_sw1.png)
 ![Configuración IP de la SVI VLAN 1 en SW-2](./assets/punto_d_sw2.png)
 
-
 #### 3. Desactivación Preventiva de Puertos Inactivos
 
 Como principio fundamental de seguridad en la Capa de Enlace, se apagaron administrativamente todas las interfaces físicas que no intervienen en la topología mediante la orden shutdown. Esta medida previene conexiones no autorizadas o ataques de acceso físico a la red.
 
-![SW-1](./assets/punto_e_sw1.png)
-![SW-1](./assets/punto_e_sw1(1).png)
+![Desactivación de las interfaces sin uso en SW-1](./assets/punto_e_sw1.png)
+![Verificación del estado de las interfaces de SW-1 mediante show ip interface brief](./assets/punto_e_sw1(1).png)
 
 Para el caso de SW-2:
 ```
@@ -182,16 +182,19 @@ sw2(config-if-range)# shutdown
 sw2(config-if-range)# exit
 ```
 
-![SW-2](./assets/punto_e_sw2.png)
+![Verificación de las interfaces de SW-2 y guardado de la configuración](./assets/punto_e_sw2.png)
 
-Posteriormente, se respaldaron las configuraciones en la memoria NVRAM de ambos conmutadores ejecutando la orden: `sw1# copy running-config startup-config`
+#### 4. Guardado de la Configuración y Prueba de Conectividad Inicial
+
+Posteriormente, se respaldaron las configuraciones en la memoria NVRAM de ambos conmutadores ejecutando la orden `copy running-config startup-config`, equivalente a `write memory`.
 
 Se realizó una prueba de conectividad ICMP (`ping`) desde la PC-A (`192.168.10.3`) hacia la PC-B (`192.168.10.4`).
-- Resultado: Exitoso (0% de pérdida de paquetes).
+
+- **Resultado:** Exitoso (0% de pérdida de paquetes).
 
 ![Prueba de ping entre PC-A y PC-B](./assets/punto_g_pca.png)
 
-- Justificación Técnica: Al inicio del laboratorio, los puertos `F0/6` (SW-1), `F0/18` (SW-2) y la interfaz inter-switch `F0/1` formaban parte de la VLAN 1 por defecto. Al pertenecer a un único dominio de broadcast a Nivel 2 y compartir la subred IP `192.168.10.0/24`, las tramas Ethernet se conmutaron entre switches sin impedimentos.
+**Justificación técnica:** Al inicio del laboratorio, los puertos `F0/6` (SW-1), `F0/18` (SW-2) y la interfaz inter-switch `F0/1` formaban parte de la VLAN 1 por defecto. Al pertenecer a un único dominio de broadcast a Nivel 2 y compartir la subred IP `192.168.10.0/24`, las tramas Ethernet se conmutaron entre switches sin impedimentos.
 
 #### Creación e identificación de VLANs
 
@@ -203,6 +206,8 @@ Se crearon e identificaron las siguientes VLANs en ambos switches:
 - VLAN 99 (Management)
 
 ![Creación e identificación de VLANs en SW-1](./assets/punto_h_i_sw1.png)
+
+**VLAN utilizada por defecto:** La salida de `show vlan brief` muestra que la **VLAN 1** (`default`) es la VLAN por defecto. En este punto todos los puertos del switch (`Fa0/1` a `Fa0/24` y `Gig0/1` a `Gig0/2`) siguen perteneciendo a ella, mientras que las VLANs 10, 20 y 99 recién creadas aún no tienen puertos asignados.
 
 #### Asignación de Puertos de Acceso
 
@@ -227,24 +232,24 @@ Para evitar el uso de la VLAN 1 nativa en la gestión de red, se removió la dir
 1. **Análisis de la Tabla de VLANs (`show vlan brief`):**
    - **Segmentación Lógica:** Se confirma la presencia de las VLANs `10` (*Laboratorio*), `20` (*Bar*) y `99` (*Management*) en estado activo dentro de la base de datos de conmutación.
    - **Asignación de Puertos de Acceso:** La interfaz física `F0/6` en `SW-1` (y `F0/18` en `SW-2`) figura asignada correctamente a la **VLAN 10**, habiendo sido desvinculada de la VLAN 1 nativa.
-   * **Ausencia de Puertos en VLAN 99:** La **VLAN 99** se encuentra dada de alta pero no registra ningún puerto físico de acceso mapeado directamente a ella.
+   - **Ausencia de Puertos en VLAN 99:** La **VLAN 99** se encuentra dada de alta pero no registra ningún puerto físico de acceso mapeado directamente a ella.
 
 2. **Análisis del Estado de Interfaces (`show ip interface brief`):**
    - **SVI VLAN 1:** Muestra su estado en `unassigned` y `administratively down`, confirmando que se removió con éxito la IP de gestión de la VLAN por defecto para reducir vulnerabilidades.
    - **SVI VLAN 99:** La interfaz virtual registra asignada la dirección IP de administración de Nivel 3 (`192.168.1.11` en `SW-1` / `192.168.1.12` en `SW-2`) con estado administrativo encendido (`Status: up`). Sin embargo, su protocolo de línea figura como **`down`** (`Protocol: down`). Una Interfaz Virtual de Switch (**SVI**) requiere cumplir la condición de **asociación física activa** para pasar al estado operacional `up/up`. Esto significa que el switch debe detectar al menos un puerto físico en estado activo (*up/up*) que pertenezca a la VLAN 99. Al no existir puertos de acceso asignados a la VLAN 99, la SVI 99 carece de una Capa de Enlace subyacente activa, por lo que su protocolo de comunicación permanece en estado **`down`** e impide procesar paquetes IP.
 
 ### Análisis de Conectividad y Verificación de la Capa de Enlace
+
 Tras reasignar los puertos de los hosts a la VLAN 10 y migrar las IP de gestión a la VLAN 99, se repitieron las pruebas de transmisión ICMP:
 
-1. Prueba entre PC-A $\rightarrow$ PC-B:
-   - Comando en PC-A: ping 192.168.10.4
-   - Resultado: Fallido (Request timed out - 100% de pérdida).
-    ![Prueba de ping entre PC-A y PC-B](./assets/punto_n.png)
+| Prueba | Comando | Resultado |
+| :--- | :--- | :--- |
+| PC-A → PC-B | `ping 192.168.10.4` (desde PC-A) | ❌ Fallido (*Request timed out*, 100% de pérdida) |
+| SW-1 → SW-2 | `ping 192.168.1.12` (desde SW-1) | ❌ Fallido (*Success rate is 0 percent*) |
 
-2. Prueba entre SW-1 $\rightarrow$ SW-2:
-   - Comando en SW-1: ping 192.168.1.12
-   - Resultado: Fallido (Success rate is 0 percent).
-    ![Prueba de ping entre SW-1 y SW-2](./assets/punto_n2.png)
+![Prueba de ping entre PC-A y PC-B](./assets/punto_n.png)
+
+![Prueba de ping entre SW-1 y SW-2](./assets/punto_n2.png)
 
 #### Diagnóstico de la Falla de Conectividad entre PC-A y PC-B (VLAN 10)
 
@@ -276,9 +281,9 @@ Al estar la interfaz de gestión inactiva por falta de conexión física, el con
 
 ### Diseño Arquitectónico, VLANs y Servidor de Entretenimiento Local
 
-La topología se diseñó bajo una arquitectura jerárquica en estrella respaldada por un Switch principal (**Sw**) y un Router principal (**Router Aircraft**). La red fue segmentada lógicamente mediante IEEE 802.1Q en tres VLANs para separar el tráfico según el perfil del usuario:
+![Topología de la red LAN de la aeronave implementada en Packet Tracer](./assets/Punto3_topologia.png)
 
-![Topología de la red LAN de la aeronave](./assets/Punto3_topologia.png)
+La topología se diseñó bajo una arquitectura jerárquica en estrella respaldada por un Switch principal (**Sw**) y un Router principal (**Router Aircraft**). La red fue segmentada lógicamente mediante IEEE 802.1Q en tres VLANs para separar el tráfico según el perfil del usuario:
 
 - **VLAN 10 (Turista - Red 10.10.10.0/24)**: Asignada a los puertos de acceso **Fa0/3** a **Fa0/5** para los pasajeros de clase turista.
 
@@ -298,6 +303,10 @@ El enrutamiento inter-VLAN se implementó mediante **Router-on-a-Stick**, creand
 
 Para el acceso a Internet, la interfaz WAN GigabitEthernet0/0 (`200.0.0.1/30`) se vinculó al enlace del proveedor (ISP) en `200.0.0.2`, aplicando **NAT Overload** (PAT - Traducción de Direcciones de Red con sobrecarga) sobre las redes autorizadas para compartir la dirección IP pública de salida.
 
+Para simular Internet, en el router **ISP** se configuró una interfaz **Loopback0** con la dirección `8.8.8.8`, que responde a los pings como si fuera un servidor externo. El Router Aircraft reenvía hacia el ISP (`200.0.0.2`) el tráfico con destino externo. Como el NAT traduce las direcciones privadas a la IP pública `200.0.0.1`, que pertenece a la red directamente conectada al ISP, este puede devolver las respuestas sin conocer las subredes internas `10.10.x.x`.
+
+![Interfaces del router ISP: enlace con la aeronave y Loopback0 que simula Internet](./assets/Punto3_isp_loopback.png)
+
 ### Políticas de Control de Acceso mediante Listas de Control de Acceso (ACL)
 
 Para garantizar la seguridad de la información y la política comercial del vuelo, se implementó una **Lista de Control de Acceso Extendida (ACL 100)** aplicada de forma entrante (`in`) en la subinterfaz **Gi0/1.10** (Turista):
@@ -316,26 +325,46 @@ Extended IP access list 100
 
 ### Matriz de Pruebas, Validación de Tráfico y Resultados
 
-Se realizaron pruebas sistemáticas desde las distintas estaciones de trabajo para validar los requisitos de conectividad:
+Luego de configurar la red se realizaron las pruebas propuestas en la consigna, cuyos resultados se resumen a continuación:
 
-- **Asignación Dinámica de Direcciones (DHCP)**: Las tres PCs Turista obtuvieron sus direcciones por DHCP (`10.10.10.11` a `10.10.10.13`). Mediante el comando `ipconfig /all` en la Pc-Turista1 se validó la correcta asignación automática de la dirección IP (`10.10.10.11`), máscara de subred (`255.255.255.0`), gateway predeterminado (`10.10.10.1`) y servidor DHCP configurado en el router.
+| Prueba | Desde | Hacia | Resultado esperado | Resultado obtenido |
+| :--- | :--- | :--- | :--- | :--- |
+| Ping al servidor de entretenimiento | PC Turista | `10.10.99.10` | ✅ Responde | ✅ Responde |
+| Acceso HTTP a servidor local | PC Turista | `http://10.10.99.10` | ✅ Carga la página | ✅ Carga la página |
+| Ping a Internet | PC Turista | `8.8.8.8` | ❌ Bloqueado | ❌ Bloqueado (*Destination host unreachable*) |
+| Acceso HTTP a servidor local | PC Business | `http://10.10.99.10` | ✅ Carga | ✅ Carga |
+| Ping a Internet | PC Business | `8.8.8.8` | ✅ Funciona | ✅ Funciona |
+| Ping entre Admin y todos | PC Admin | Turista, Business, servidor e Internet | ✅ Todos | ✅ Todos |
+
+#### Asignación Dinámica de Direcciones (DHCP)
+
+Las tres PCs Turista obtuvieron sus direcciones por DHCP (`10.10.10.11` a `10.10.10.13`). Mediante el comando `ipconfig /all` en la Pc-Turista1 se validó la correcta asignación automática de la dirección IP (`10.10.10.11`), máscara de subred (`255.255.255.0`), gateway predeterminado (`10.10.10.1`) y servidor DHCP configurado en el router.
 
 ![Verificación de configuración IP por DHCP en cliente Turista](./assets/Punto3_dhcp_ipconfig.png)
 
-- **Acceso Web al Servidor Local**: Desde los navegadores web de PCs en VLAN 10, 20 y 99 se accedió exitosamente a [http://10.10.99.10](http://10.10.99.10), cargando el portal de entretenimiento a bordo.
+#### Acceso Web al Servidor Local (Turista y Business)
+
+Desde los navegadores web de las PCs Turista y Business se accedió exitosamente a [http://10.10.99.10](http://10.10.99.10), cargando el portal de entretenimiento a bordo.
 
 ![Acceso de PC Turista a sitio web local](./assets/Punto3_accesso_PC_turista_HTML.png)
+
 ![Acceso de PC Business a sitio web local](./assets/Punto3_accesso_PC_bussiness_HTML.png)
 
-- **Prueba de Aislamiento de Internet (Turista)**: La simulación de ping a `8.8.8.8` desde la PC de Turista devolvió un mensaje de *Destination host unreachable* emitido por el Gateway (`10.10.10.1`), ratificando el bloqueo correcto por la ACL 100.
+#### Ping al Servidor y Aislamiento de Internet (Turista)
 
-![Ping a Internet (8.8.8.8) desde PC Turista](./assets/Punto3_ping_PC_turista_internet.png)
+El ping desde la PC Turista hacia el Servidor de Entretenimiento (`10.10.99.10`) obtuvo respuesta, ya que la ACL 100 permite el tráfico hacia las redes internas. En cambio, el ping a `8.8.8.8` devolvió un mensaje de *Destination host unreachable* emitido por el Gateway (`10.10.10.1`), ratificando el bloqueo correcto de Internet por la ACL 100.
 
-- **Prueba de Salida a Internet (Business)**: La ejecución de ping a `8.8.8.8` desde la estación de Business resultó en trazas de eco exitosas, confirmando el funcionamiento del NAT Overload.
+![Ping al servidor y a Internet (8.8.8.8) desde PC Turista](./assets/Punto3_ping_PC_turista_internet.png)
+
+#### Salida a Internet (Business)
+
+La ejecución de ping a `8.8.8.8` desde la estación de Business resultó en trazas de eco exitosas, confirmando el funcionamiento del NAT Overload. El primer paquete se pierde mientras se resuelven las direcciones MAC por ARP.
 
 ![Ping a Internet (8.8.8.8) desde PC Business](./assets/Punto3_ping_PC_bussiness_internet.png)
 
-- **Conectividad de Administración**: La PC de Administración ejecutó pings exitosos hacia una PC Turista (`10.10.10.11`), una PC Business (`10.10.20.11`), el Servidor de Entretenimiento (`10.10.99.10`) e Internet (`8.8.8.8`), demostrando alcance total sobre la red local y salida a Internet mediante NAT Overload. El primer paquete hacia las otras VLANs se pierde mientras se resuelven las direcciones MAC por ARP. Además, el TTL de las respuestas permite distinguir el tráfico conmutado dentro de la misma VLAN (servidor, TTL 128) del enrutado entre VLANs por el router (PCs Turista y Business, TTL 127).
+#### Conectividad de Administración
+
+La PC de Administración ejecutó pings exitosos hacia una PC Turista (`10.10.10.11`), una PC Business (`10.10.20.11`), el Servidor de Entretenimiento (`10.10.99.10`) e Internet (`8.8.8.8`), demostrando alcance total sobre la red local y salida a Internet mediante NAT Overload. Al igual que en la prueba anterior, el primer paquete hacia las otras VLANs se pierde mientras se resuelve ARP. Además, el TTL de las respuestas permite distinguir el tráfico conmutado dentro de la misma VLAN (servidor, TTL 128) del enrutado entre VLANs por el router (PCs Turista y Business, TTL 127).
 
 ![Ping a todos los segmentos desde PC Admin](./assets/Punto3_ping_PC_admin_todos.png)
 
