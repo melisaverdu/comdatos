@@ -31,8 +31,6 @@
   - [Servidor TCP mínimo](#servidor-tcp-mínimo)
     - [Análisis de sockets TCP y correlación código-red](#análisis-de-sockets-tcp-y-correlación-código-red)
     - [Ejecución e inspección en Loopback](#ejecución-e-inspección-en-loopback)
-    - [Implementación y experimentación con Sockets UDP](#implementación-y-experimentación-con-sockets-udp)
-    - [Comunicación de sockets entre dos computadoras](#comunicación-de-sockets-entre-dos-computadoras)
   - [Conclusión](#conclusión)
   - [Referencias](#referencias)
 
@@ -165,23 +163,6 @@ f) Comportamiento ante puertos cerrados (RST en TCP vs ICMP Port Unreachable en 
 - Ejecución de tcp_server.py y tcp_client.py en loopback (127.0.0.1:12000).
 - Captura de Wireshark con filtro tcp.port == 12000.
 - Registro de salidas de consola y trazabilidad con los paquetes capturados.
--->
-
-### Implementación y experimentación con Sockets UDP
-
-<!-- 
-- Implementación de udp_server.py y udp_client.py (puerto 12001) usando SOCK_DGRAM, sendto() y recvfrom().
-- Captura en loopback con filtro udp.port == 12001.
-- Comparación en código y comportamiento de red frente a la versión TCP.
--->
-
-### Comunicación de sockets entre dos computadoras
-
-<!-- 
-- Configuración y ejecución en dos equipos reales en la misma LAN / Hotspot Wi-Fi:
-  * Servidor escuchando en 0.0.0.0 (o IP de LAN).
-  * Cliente conectándose a la IP de la otra máquina.
-- Captura de tráfico en la placa Wi-Fi mostrando las direcciones IP de la LAN y las direcciones MAC de ambos hosts.
 -->
 
 ---
