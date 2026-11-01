@@ -140,6 +140,66 @@ La entrada `192.168.1.1 ... lladdr f0:c4:78:ba:88:40 REACHABLE` indica que el ga
 - Captura de tráfico con filtros: arp, arp.opcode, arp.dst.proto_ipv4, arp || icmp, eth.dst == ff:ff:ff:ff:ff:ff.
 -->
 
+Todas las pruebas se hicieron en una única captura de Wireshark sobre la interfaz Wi-Fi `wlx7cc2c627ffa4`. No se usó la interfaz de loopback porque ARP solo se usa cuando hay que entregar tramas en un enlace físico: el tráfico hacia 127.0.0.1 nunca necesita una dirección MAC. Para generar tráfico ARP nuevo se usaron las opciones A y B de la consigna.
+
+#### Opción B: borrado de la entrada del gateway
+
+Con Wireshark capturando, se borró de la caché la entrada del gateway y se le hizo ping, todo en una sola línea:
+
+```bash
+sudo ip neigh del 192.168.1.1 dev wlx7cc2c627ffa4; ip neigh show; ping -4 -c 4 192.168.1.1; ip neigh show
+```
+
+Los comandos se encadenaron con `;` porque, en un primer intento hecho de a uno, la computadora volvió a resolver la MAC del gateway por su propio tráfico (navegación, actualizaciones) en los segundos que pasaron entre el borrado y el `ip neigh show`. Ejecutados juntos, se ve el ciclo completo:
+
+![Borrado de la entrada del gateway y nueva resolución](./assets/p2_borrado_cache.png)
+
+1. Después del borrado, el gateway aparece como `INCOMPLETE`: la entrada existe pero sin MAC, porque ya se envió un ARP Request y se está esperando la respuesta.
+2. El ping funciona normalmente (4 de 4 respuestas).
+3. Al final, el gateway vuelve a figurar como `REACHABLE`, con la misma MAC `f0:c4:78:ba:88:40`.
+
+Con el filtro `arp` se observan los mensajes ARP de toda la captura. En Wireshark, `TPLink_27:ff:a4` corresponde a nuestra computadora y `HuaweiTechno_ba:88:40` al router: Wireshark reemplaza los primeros 3 bytes de la MAC por el nombre del fabricante.
+
+![Filtro arp](./assets/p2_filtro_arp.png)
+
+|Paquetes|Quién pregunta|MAC destino del Request|Descripción|
+|--------|--------------|-----------------------|-----------|
+|513 / 514|Nuestra computadora, por 192.168.1.1|Broadcast|Resolución del primer intento, disparada por el tráfico propio|
+|2704 / 2705|El router, por 192.168.1.95|Nuestra MAC (unicast)|El router reconfirma su propia entrada ARP|
+|7322 / 7323|El router, por 192.168.1.95|Nuestra MAC (unicast)|Ídem|
+|7763 / 7764|Nuestra computadora, por 192.168.1.1|Broadcast|Resolución correspondiente a la terminal anterior|
+
+El par **7763 / 7764** es el que se analiza en detalle en la sección siguiente. Para aislar cada uno se usaron los filtros `arp.opcode == 1` (solo Requests) y `arp.opcode == 2` (solo Replies).
+
+#### Opción A: ping a una IP inexistente
+
+Se hizo ping a 192.168.1.253, una dirección de la subred que no está asignada a ningún equipo, y luego se inspeccionó la caché:
+
+```bash
+ping -4 -c 4 192.168.1.253
+ip neigh show
+```
+
+![Ping a una IP inexistente y caché ARP](./assets/p2_ping_inexistente.png)
+
+Los cuatro pings fallan con `Destination Host Unreachable`, informado por **nuestra propia computadora** (`From 192.168.1.95`) y no por el router. La caché registra la dirección como `192.168.1.253 ... FAILED`, sin MAC.
+
+Con el filtro `arp.dst.proto_ipv4 == 192.168.1.253`, que selecciona los mensajes ARP cuyo *Target IP address* es esa dirección, quedan solamente los Requests hacia la IP inexistente:
+
+![Filtro arp.dst.proto_ipv4 == 192.168.1.253](./assets/p2_filtro_inexistente.png)
+
+Con el filtro `arp || icmp` se ven juntos el tráfico ARP y los pings, para comprobar si algún Echo Request llegó a salir hacia esa dirección:
+
+![Filtro arp || icmp](./assets/p2_filtro_arp_icmp.png)
+
+#### Tráfico broadcast
+
+Por último, con el filtro `eth.dst == ff:ff:ff:ff:ff:ff` se muestran todas las tramas Ethernet enviadas a broadcast, de cualquier protocolo:
+
+![Filtro eth.dst == ff:ff:ff:ff:ff:ff](./assets/p2_filtro_broadcast.png)
+
+Las 8 tramas que aparecen son ARP Requests enviados por nuestra computadora: 2 hacia el gateway (513 y 7763) y 6 hacia 192.168.1.253. Ninguno de los Requests del router aparece en este filtro, porque todos fueron enviados en unicast.
+
 ### Análisis de tramas ARP Request y Reply
 
 <!-- 
@@ -150,6 +210,92 @@ La entrada `192.168.1.1 ... lladdr f0:c4:78:ba:88:40 REACHABLE` indica que el ga
   c) Observación con IP inexistente (reintentos de ARP, presencia/ausencia de ICMP).
   d) Reintento de ping tras 1 minuto (comportamiento de caché, ventajas y riesgos de entradas desactualizadas).
 -->
+
+Se analizaron el ARP Request 7763 y su ARP Reply 7764, correspondientes a la Opción B. Para cada uno se desplegaron en Wireshark los encabezados Ethernet II y ARP:
+
+![Detalle del ARP Request 7763](./assets/p2_request_detalle.png)
+
+![Detalle del ARP Reply 7764](./assets/p2_reply_detalle.png)
+
+|Campo|ARP Request (7763)|ARP Reply (7764)|
+|-----|------------------|----------------|
+|MAC destino (Ethernet)|ff:ff:ff:ff:ff:ff (Broadcast)|7c:c2:c6:27:ff:a4|
+|MAC origen (Ethernet)|7c:c2:c6:27:ff:a4|f0:c4:78:ba:88:40|
+|Opcode|1 (request)|2 (reply)|
+|Sender MAC|7c:c2:c6:27:ff:a4|f0:c4:78:ba:88:40|
+|Sender IP|192.168.1.95|192.168.1.1|
+|Target MAC|00:00:00:00:00:00|7c:c2:c6:27:ff:a4|
+|Target IP|192.168.1.1|192.168.1.95|
+
+En el Reply, los campos Sender y Target se invierten respecto del Request, y el Target MAC pasa de estar en ceros a contener nuestra MAC.
+
+<!-- Respuesta a) -->
+
+#### a) Request broadcast y Reply unicast
+
+El Request se envía en broadcast porque lo que se busca es justamente la MAC del destino: sin conocerla, no hay otra forma de hacerle llegar la pregunta que enviarla a todos los equipos de la red. Por eso el **Target MAC del Request vale `00:00:00:00:00:00`**: es la incógnita, y el campo se completa con ceros porque no tiene un valor útil.
+
+El Reply, en cambio, se envía en unicast porque quien responde ya sabe a quién contestarle: el Request trae la MAC del que pregunta en el campo *Sender MAC*. Enviarlo a broadcast molestaría innecesariamente a los demás equipos de la red.
+
+En la captura también se observa que el broadcast solo es necesario cuando la MAC es desconocida. Los Requests del router (paquetes 2704, 7322, 12350, 18142, 24256 y 26943) preguntan por 192.168.1.95, pero van dirigidos directamente a nuestra MAC: el router ya la tiene en su caché y solo está verificando que siga siendo válida. Por eso ninguno de ellos aparece con el filtro `eth.dst == ff:ff:ff:ff:ff:ff`.
+
+<!-- Respuesta b) -->
+
+#### b) EtherType y ausencia de encabezado IP
+
+En el encabezado Ethernet II de ambas tramas, el campo **Type vale `0x0806`**, que identifica a ARP. Es el mismo campo que en el punto anterior valía `0x0800` para IPv4: le indica al receptor qué protocolo viene a continuación. En el panel hexadecimal de las capturas aparece resaltado como los bytes `08 06`.
+
+Inmediatamente después del encabezado Ethernet viene el mensaje ARP, **sin ningún encabezado IP en el medio**. Esto muestra que ARP no viaja dentro de IP, sino directamente sobre la capa de enlace. Una consecuencia de esto es que los mensajes ARP no tienen IP de origen ni de destino en un encabezado, ni TTL, y por lo tanto no pueden ser enrutados: nunca salen de la red local.
+
+Cada trama ocupa 42 bytes: 14 del encabezado Ethernet y 28 del mensaje ARP.
+
+|Campo ARP|Tamaño|Valor en el Request|
+|---------|------|-------------------|
+|Hardware type|2 bytes|1 (Ethernet)|
+|Protocol type|2 bytes|0x0800 (IPv4)|
+|Hardware size|1 byte|6|
+|Protocol size|1 byte|4|
+|Opcode|2 bytes|1 (request)|
+|Sender MAC|6 bytes|7c:c2:c6:27:ff:a4|
+|Sender IP|4 bytes|192.168.1.95|
+|Target MAC|6 bytes|00:00:00:00:00:00|
+|Target IP|4 bytes|192.168.1.1|
+
+Los campos *Hardware type* y *Protocol type* indican qué tipo de direcciones se están traduciendo (Ethernet e IPv4), y *Hardware size* y *Protocol size* su longitud (6 bytes una MAC, 4 bytes una IPv4).
+
+<!-- Respuesta c) -->
+
+#### c) IP inexistente
+
+En las capturas de la Opción A se observa que:
+
+- **Se enviaron 6 ARP Requests** preguntando por 192.168.1.253 (paquetes 12600 y 12603 a 12607), todos a broadcast y separados por aproximadamente un segundo. La computadora reintenta porque un Request o su respuesta podrían haberse perdido.
+- **No hubo ningún ARP Reply**, ya que ningún equipo tiene esa dirección.
+- **No salió ningún paquete ICMP** hacia 192.168.1.253. Con el filtro `arp || icmp`, los únicos Echo Request y Echo Reply de la captura son los del ping al gateway.
+
+Esto ocurre porque, sin la MAC del destino, no es posible armar la trama Ethernet que llevaría el Echo Request. Los pings quedaron en espera mientras se intentaba la resolución (`pipe 4` en la salida de `ping`) y, al no recibir respuesta, el sistema operativo marcó la entrada como `FAILED` y descartó los paquetes. Por eso el mensaje `Destination Host Unreachable` lo informa nuestra propia computadora (`From 192.168.1.95`) y no aparece en la captura: se genera localmente y nunca viaja por la red.
+
+<!-- Respuesta d) -->
+
+#### d) Ping repetido después de 1 minuto
+
+Pasado más de un minuto desde la resolución de la Opción B, se repitió el ping al gateway:
+
+![Ping al gateway repetido](./assets/p2_ping_1min.png)
+
+![Filtro arp después del ping repetido](./assets/p2_filtro_1min.png)
+
+Antes del ping, el gateway ya figuraba como `REACHABLE` con su MAC, y en la captura **no aparece ningún ARP Request nuevo de nuestra computadora** después del 7763: la MAC se tomó directamente de la caché. Los únicos mensajes ARP nuevos (24256 / 24257) son otra verificación unicast iniciada por el router. La entrada seguía siendo válida aunque pasaron varios minutos desde su resolución porque la computadora usa el gateway constantemente para salir a Internet, y ese tráfico permite confirmar que la asociación sigue siendo correcta sin necesidad de volver a preguntar.
+
+**Ventajas de la caché:**
+
+- Se evita la demora de resolver la MAC antes de cada paquete.
+- Se reduce el tráfico broadcast, que todos los equipos de la red deben recibir y procesar.
+
+**Riesgos de las entradas desactualizadas:**
+
+- Si una IP pasa a otro equipo (por ejemplo, al reemplazar el router o al reasignarse una dirección por DHCP), los hosts siguen enviando las tramas a la MAC vieja hasta que la entrada vence o se reconfirma, y esos paquetes se pierden.
+- ARP no tiene autenticación: un host acepta un Reply sin poder verificar quién lo envió. Un atacante puede enviar Replies falsos asociando la IP del gateway a su propia MAC (*ARP spoofing*). La víctima guarda esa asociación en su caché y empieza a enviarle todo su tráfico al atacante, que puede leerlo o modificarlo (ataque de intermediario o *man-in-the-middle*).
 
 ---
 
