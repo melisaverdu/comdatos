@@ -84,6 +84,55 @@ d) Explicación con palabras propias del mecanismo de resolución en LAN.
 e) Inspección de la caché ARP local (arp -a / ip neigh show) y verificación de la MAC del gateway.
 -->
 
+<!-- Respuesta a) -->
+
+Las direcciones IP sirven para identificar a un host de extremo a extremo, pero dentro de una red local las tramas Ethernet (o Wi-Fi) se entregan usando direcciones **MAC**. Cuando un host quiere enviar un datagrama IP a otro equipo de su misma red, conoce su IP pero necesita su MAC para armar la trama. **ARP** (Address Resolution Protocol, RFC 826) resuelve ese problema: traduce una dirección IPv4 a la dirección MAC correspondiente dentro del mismo enlace.
+
+Su ubicación en el modelo de capas es discutible porque tiene características de las dos capas entre las que trabaja:
+
+- **Parece de capa 2 (enlace):** sus mensajes viajan directamente dentro de una trama Ethernet (EtherType `0x0806`), sin encabezado IP, y nunca salen de la red local: los routers no los reenvían.
+- **Parece de capa 3 (red):** maneja direcciones IP y existe solo para darle servicio a IP.
+
+Por eso muchas veces se lo ubica "entre" ambas capas, como un protocolo de capa 2,5.
+
+<!-- Respuesta b) -->
+
+- **ARP Request (Opcode 1):** es la pregunta *"¿Quién tiene la IP X? Respondele a la IP Y"*. Como el emisor todavía no sabe la MAC del destino, la envía en **broadcast** (MAC destino `ff:ff:ff:ff:ff:ff`), de modo que la reciben todos los equipos de la red local. Incluye la MAC e IP del emisor y la IP buscada; el campo de MAC buscada va en ceros.
+- **ARP Reply (Opcode 2):** es la respuesta *"La IP X está en la MAC Z"*. La envía únicamente el equipo que tiene la IP buscada, y la manda en **unicast** directamente al que preguntó, ya que conoce su MAC gracias al Request.
+
+<!-- Respuesta c) -->
+
+La **caché ARP** es una tabla temporal que mantiene el sistema operativo con las asociaciones IP → MAC ya resueltas. Existe para no tener que hacer un Request antes de cada paquete: si cada envío requiriera un broadcast, se agregaría demora a la comunicación y se cargaría a todos los equipos de la red, que deben procesar cada broadcast.
+
+Las entradas no son permanentes: vencen después de un tiempo o se vuelven a confirmar, porque una IP puede pasar a otro equipo (por ejemplo, al reasignarse por DHCP). En Linux, `ip neigh show` muestra el estado de cada entrada; los más comunes son `REACHABLE` (confirmada recientemente), `STALE` (vieja, se reconfirma la próxima vez que se use), `INCOMPLETE` (se envió un Request y se espera la respuesta) y `FAILED` (nadie respondió).
+
+<!-- Respuesta d) -->
+
+Cuando un host quiere enviar un paquete IP, el proceso es el siguiente:
+
+1. Usando su máscara, decide si el destino está en su misma red. Si está, la MAC que necesita es la del destino; si no, es la del **gateway**, que va a reenviar el paquete. Por eso en el punto anterior la trama dirigida a 8.8.8.8 llevaba como MAC destino la del router.
+2. Busca esa IP en su caché ARP. Si la encuentra, arma la trama con esa MAC y la envía.
+3. Si no la encuentra, deja el paquete en espera y envía un ARP Request en broadcast preguntando por esa IP.
+4. Todos los equipos de la red reciben el Request, pero solo el que tiene esa IP responde, con un ARP Reply unicast que contiene su MAC.
+5. El host guarda la asociación en su caché y recién ahí envía el paquete que tenía en espera. El que respondió también aprovecha el Request para guardar la MAC del que preguntó.
+
+<!-- Respuesta e) -->
+
+Las pruebas de esta sección se hicieron en una computadora con Linux conectada por Wi-Fi a la misma red que la del punto anterior:
+
+|Parámetro|Valor|
+|---------|-----|
+|Interfaz|`wlx7cc2c627ffa4` (Wi-Fi USB TP-Link)|
+|Dirección IPv4|192.168.1.95/24|
+|Dirección MAC|7c:c2:c6:27:ff:a4|
+|Gateway por defecto|192.168.1.1|
+
+Con `ip neigh show` se inspeccionó la caché ARP:
+
+![Caché ARP con ip neigh show](./assets/p2_cache_arp.png)
+
+La entrada `192.168.1.1 ... lladdr f0:c4:78:ba:88:40 REACHABLE` indica que el gateway tiene la MAC **`f0:c4:78:ba:88:40`** y que la asociación fue confirmada recientemente. Es la misma MAC que apareció como destino de las tramas hacia 8.8.8.8 en el punto anterior, lo que confirma que es la del router. La segunda línea (`fe80::1`) es la entrada IPv6 del mismo router; IPv6 no usa ARP sino NDP (Neighbor Discovery), por lo que no se analiza aquí.
+
 ### Generación y captura de tráfico ARP
 
 <!-- 
