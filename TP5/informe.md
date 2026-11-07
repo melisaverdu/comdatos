@@ -48,45 +48,54 @@ c) ¿Qué hace ping? ¿Qué son un Echo Request y un Echo Reply? ¿Qué campos d
 d) ¿Qué información mínima contiene un mensaje ICMP de tipo Echo?
 -->
 
-<!-- Respuesta a)-->
+<!-- Respuesta a) -->
 
-ICMP (Internet Control Message Protocol, RFC 792) es el protocolo de control y diagnostico de la pila TCP/IP. Lo usan los hosts y routers para avisar de errores y para hacer consultas sobre la red. Sus principales usos son:
+#### a) ¿Qué es ICMP y para qué se usa?
 
-- **Mensajes de error:** Destination Unreachable (red, host o puerto inalcanzable), Time Exceeded(el TTL llego a 0, que es lo que usa `traceroute`) y Redirect.
+ICMP (Internet Control Message Protocol, RFC 792) es el protocolo de control y diagnóstico de la pila TCP/IP. Lo usan los hosts y routers para avisar de errores y para hacer consultas sobre la red. Sus principales usos son:
+
+- **Mensajes de error:** Destination Unreachable (red, host o puerto inalcanzable), Time Exceeded (el TTL llegó a 0, que es lo que usa `traceroute`) y Redirect.
 - **Mensajes de consulta:** Echo Request y Echo Reply, que son los que usa `ping`.
 
-No transporta datos ni ofrece servicio de transporte, solo lleva informacion sobre la red.
+No transporta datos de aplicaciones ni ofrece servicio de transporte: no tiene puertos y solo lleva información sobre la red.
 
-<!-- Respuesta B -->
+<!-- Respuesta b) -->
 
-ICMP viaja dentro de IP: el mensaje ICMP va como payload de un datagrama IPv4. Aun asi se lo considera parte de la capa de red, porque su funcion es dar soporte a IP y no a las aplicaciones.
+#### b) Relación entre ICMP e IP
 
-El receptor sabe que hay adentro por el campo **Protocol** del encabezado IPv4. **Protocol = 1** significa ICMP
+ICMP viaja dentro de IP: el mensaje ICMP va como payload de un datagrama IPv4. Aun así se lo considera parte de la capa de red, porque su función es dar soporte a IP y no a las aplicaciones.
 
-<!-- Respuesta C -->
+El receptor sabe qué hay adentro por el campo **Protocol** del encabezado IPv4. **Protocol = 1** significa ICMP.
 
-`Ping` comprueba si un host es alcanzable a nivel de IP. Envia un **Echo Request** y espera el **Echo Reply** que devuelve el destino, con eso mide el tiempo de ida y vuelta(RTT) y el porcentaje de paquetes perdidos.
+<!-- Respuesta c) -->
+
+#### c) Ping, Echo Request y Echo Reply
+
+`ping` comprueba si un host es alcanzable a nivel de IP. Envía un **Echo Request** y espera el **Echo Reply** que devuelve el destino; con eso mide el tiempo de ida y vuelta (RTT) y el porcentaje de paquetes perdidos.
 
 - **Echo Request:** el emisor le pide al destino que le devuelva el mensaje.
-- **Echo Reply:** el destino responde devolviendo el mismo identificador, numero de secuencia y datos.
+- **Echo Reply:** el destino responde devolviendo el mismo identificador, número de secuencia y datos.
 
 Para distinguirlos se usan los siguientes campos:
 
-- **Type:** 8 es Echo Request y 0 Echo Reply.**Code** vale 0 en ambos.
-- **Identifier:** identifica el proceso `ping` que envio el mensaje, por si hay varios corriendo a la vez.
-- **Sequence number:** permite emparejar cada Request con su Reply y detectar perdidas o desorden
+- **Type:** 8 es Echo Request y 0 es Echo Reply. **Code** vale 0 en ambos.
+- **Identifier:** identifica el proceso `ping` que envió el mensaje, por si hay varios corriendo a la vez.
+- **Sequence number:** permite emparejar cada Request con su Reply y detectar pérdidas o desorden.
 
-<!-- Respuesta D -->
+<!-- Respuesta d) -->
+
+#### d) Información mínima de un mensaje ICMP Echo
+
 Tiene un encabezado de **8 bytes** seguido de los datos:
 
 |Campo|Tamaño|
 |-----|-------|
-|Type(8 o 0)|1 byte|
-|Code(0)|1byte|
+|Type (8 o 0)|1 byte|
+|Code (0)|1 byte|
 |Checksum|2 bytes|
 |Identifier|2 bytes|
 |Sequence number|2 bytes|
-|Data (payload,opcional)|variable|
+|Data (payload, opcional)|variable|
 
 ### Configuración de red y captura de tráfico
 
@@ -112,7 +121,7 @@ Con Wireshark capturando en `wlp1s0`, se hizo ping al gateway y a 8.8.8.8 (4 paq
 
 ![Ping al gateway y a 8.8.8.8 desde la terminal](./assets/p1_ping_terminal.png)
 
-Luego se detuvo la captura y se aplicaron los filtros pedidos. Con `icmp` se ven los 16 paquetes: un Request y su Reply por cada ping, primero con el gateway (paquetes 212 a 232) y después con 8.8.8.8 (paquetes 267 a 287):
+Luego se detuvo la captura y se aplicaron los filtros pedidos. Con `icmp` quedan 16 paquetes: un Request y su Reply por cada ping, primero con el gateway (paquetes 212 a 232) y después con 8.8.8.8 (paquetes 267 a 287). La captura de pantalla muestra los primeros 15; el último Reply (287) aparece en las capturas de los filtros siguientes:
 
 ![Filtro icmp](./assets/p1_filtro_icmp.png)
 
@@ -139,12 +148,19 @@ Con `icmp && ip.addr == 8.8.8.8` queda el intercambio con 8.8.8.8 en ambos senti
   d) Análisis de TTL (Request vs Reply de 8.8.8.8 y acción del router).
   e) Diagrama de encapsulación "cajas dentro de cajas" con tamaños en bytes.
 -->
-|Capa|Origen|Destino|Campo que indica protoclo|
+
+La siguiente tabla corresponde al Echo Request **267**, enviado a 8.8.8.8:
+
+|Capa|Origen|Destino|Campo que indica protocolo|
 |----|------|-------|-------------------------|
 |Ethernet II|00:45:e2:09:bf:09|f0:c4:78:ba:88:40|Type: IPv4 (0x0800)|
-|Internet Protocol v4|192.168.1.64|8.8.8.8|Protocol: ICMP(1)|
-|Internet Control Message Protocol|Identifier: 0x615b (24923)|Identifier: 0x615b (24923)|Type: 8 / Code: 0|
-|Datos/payload|-|-|-|
+|Internet Protocol Version 4|192.168.1.64|8.8.8.8|Protocol: ICMP (1)|
+|Internet Control Message Protocol|—|—|— (los datos van directo como payload)|
+|Datos / payload|—|—|—|
+
+ICMP no tiene direcciones propias: el mensaje se identifica con Type 8 / Code 0 y con el Identifier `0x615b` (24923), pero esos campos no indican ningún protocolo superior.
+
+Aunque la captura se hizo sobre Wi-Fi (`wlp1s0`), Wireshark muestra la capa de enlace como **Ethernet II** y no como 802.11. Esto se debe a que, fuera del modo monitor, el driver de la placa inalámbrica convierte las tramas 802.11 al formato Ethernet II antes de entregárselas al sistema operativo, así que Wireshark recibe tramas con encabezado Ethernet de 14 bytes.
 
 <!-- Respuesta a) -->
 
@@ -211,7 +227,7 @@ El **Identifier** y el **Sequence number** se mantienen porque el destino debe c
 El payload está al final del mensaje ICMP, en el campo **Data**. Tiene **56 bytes**, que es el tamaño por defecto del `ping` de Linux. Su contenido es:
 
 - Los primeros **16 bytes** son una marca de tiempo (*timestamp*, segundos y microsegundos) del momento en que se envió el Request. `ping` la usa para calcular el RTT cuando vuelve la respuesta. En el paquete 212 son `6a d3 e4 6a 00 00 00 00 c4 a3 02 00 00 00 00 00`.
-- Los **40 bytes** restantes son un patrón de relleno con valores consecutivos (`0x10, 0x11, 0x12, … 0x37`), que en el panel hexadecimal se ve desde el offset 0x0032 hasta el final de la trama.
+- Los **40 bytes** restantes son un patrón de relleno con valores consecutivos (`0x10, 0x11, 0x12, … 0x37`), que en el panel hexadecimal se ve desde el offset 0x003a (14 + 20 + 8 + 16 = 58 bytes) hasta el final de la trama: en la fila `0030`, el `10` es el byte número 11.
 
 En el Echo Reply (paquete 213) el payload es **idéntico**, byte por byte, ya que el destino lo devuelve sin modificarlo. Se puede comprobar comparando el panel hexadecimal de las capturas de los filtros `icmp.type == 8` e `icmp.type == 0`.
 
@@ -255,6 +271,8 @@ El TTL que recibimos es entonces el valor inicial del servidor menos la cantidad
 |Datagrama IPv4|20 bytes|64 bytes (mensaje ICMP)|84 bytes|
 |Mensaje ICMP|8 bytes|56 bytes (datos)|64 bytes|
 |Datos (payload)|—|56 bytes|56 bytes|
+
+Los 98 bytes son los que informa Wireshark (`98 bytes on wire`) y no incluyen el preámbulo (8 bytes) ni el FCS (4 bytes) de la trama, porque la placa de red los procesa y los descarta antes de entregarle la trama al sistema operativo, así que Wireshark no los captura.
 
 ---
 
@@ -367,3 +385,8 @@ Sección a completar al finalizar todas las partes de la práctica.
 <!-- 
 Bibliografía y fuentes consultadas.
 -->
+
+- Postel, J. (1981). *RFC 792: Internet Control Message Protocol*. IETF. <https://www.rfc-editor.org/rfc/rfc792>
+- Postel, J. (1981). *RFC 791: Internet Protocol*. IETF. <https://www.rfc-editor.org/rfc/rfc791>
+- Wireshark Foundation. *Wireshark User's Guide: Building Display Filter Expressions*. <https://www.wireshark.org/docs/wsug_html_chunked/ChWorkBuildDisplayFilterSection.html>
+- *ping(8), manual de iputils*. <https://man7.org/linux/man-pages/man8/ping.8.html>
