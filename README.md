@@ -9,6 +9,7 @@ Cada carpeta corresponde a un Trabajo Práctico (TP) de la materia:
 - **[TP1](./TP1/):** Repaso de fundamentos esenciales e introducción a Packet Tracer.
 - **[TP2](./TP2/):** Capa física y capa de enlace de datos (propagación, ruido, sincronización y decodificación de tramas).
 - **[TP3](./TP3/):** Capas de enlace de datos, red y transporte (Ethernet, MAC vs. IP, protocolo TCP, Wireshark y Packet Sender).
+- **[TP5](./TP5/):** Transmisión de datos de extremo a extremo (ICMP y ping, ARP, TCP y UDP con ncat, y sockets TCP en Python, analizados con Wireshark).
 
 ## Autores
 
